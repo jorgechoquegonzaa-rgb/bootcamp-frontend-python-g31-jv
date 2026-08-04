@@ -1,0 +1,36 @@
+/*esto es un comentario en css */
+
+body {
+  background-color: peru;
+}
+
+p {
+  color: blue;
+}
+
+
+/* TODO: Añadan un background a la etiqueta h2, h3, h4 y cambien su tamaño a
+    50px */
+
+h5 {
+  background-color: aqua;
+  foot-size: 50px
+}
+
+#estado {
+  background-color: yellow;
+  }
+
+.btn {
+  background-color: red;
+  }
+
+.texto-resltado {
+  color: blue;
+  }
+
+.btn-verde {
+  background-color: chartreuse;
+  }
+  
+
