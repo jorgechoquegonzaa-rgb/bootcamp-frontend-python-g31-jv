@@ -296,6 +296,7 @@ console.log(promedioArray([])); // → 0
 // Descripción: Convierte una cadena separada por comas en un array limpio y sin espacios extra.
 
 function textoALista(texto = "") {
+  if (texto.trim() === "") return [];
   return texto
     .split(",")
     .map((item) => item.trim())
