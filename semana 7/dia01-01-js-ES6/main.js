@@ -70,56 +70,75 @@ const saludoEnMayusculas = (nombre = "Anónimo") => {
 };
 
 console.log(saludoEnMayusculas());
-console.log(saludoEnMayusculas("Luizz"));
+console.log(saludoEnMayusculas("Uzziel"));
 
-//PARAMETROS REST (operador rest -> ...)
-//permiten que la funcion reciba una cantidad indefinida de argumentos y los agrupa dentro de un array
+// PARÁMETROS REST (operador rest -> ...)
+// Permiten que la función reciba una cantidad indefinida de argumentos y los agrupa dentro de un array
 
-const numeros = [4, 5]
+const numeros = [4, 5];
 
-const miSuma = (n1, n2) => n1 + n2
+const miSuma = (n1, n2) => n1 + n2;
 
-console.log(miSuma(6, 7)) //13
-console.log(miSuma(...numeros)) //9
+console.log(miSuma(6, 7)); // 13
+console.log(miSuma(...numeros)); // 9
 
-const listaDeNumeros = [6, 33, 1, -66, 998, 453]
+const listaDeNumeros = [6, 33, 1, -66, 998, 453];
 
-console.log(Math.max(25,8,9,54))
-console.log(Math.max(... listaDeNumeros))
+console.log(Math.max(25, 8, 65, 9, 54));
+console.log(Math.max(...listaDeNumeros)); // 998
 
-const misuma2 = (...numeros) => {
-  console.log(numeros)
-  //returm reduce(...)
-}
-misuma2(1, 2, 3, 4, 5, 6)
+const miSuma2 = (...numeros) => {
+  console.log(numeros);
+  // return reduce(...)
+};
 
-//SPREAS OPERATOR (...)
-//Sirve para exapndir un arreglo, e incluso objetos
+miSuma2(1, 2, 3, 4, 5, 6);
 
-const frutas = ['manzanas', 'naranjas', 'sandias']
+// SPREAD OPERATOR (...)
+// Sirve para expandir un arreglo, e incluso objetos
 
-const verduras = ['papas', 'cebollas']
+const frutas = ["manzanas", "naranjas", "sandías"];
 
-console.log(frutas.concat(verduras))
+const verduras = ["papas", "cebollas"];
 
-const frutasYVerduras = [...frutas, ...verduras]
+console.log(frutas.concat(verduras));
 
-console.log(frutasYVerduras) //['manzanas', 'naranjas', 'sandias', 'papas', 'cebollas']
+const frutasYVerduras = [...frutas, ...verduras];
+
+console.log(frutasYVerduras); // ['manzanas', 'naranjas', 'sandías', 'papas', 'cebollas']
 
 const persona = {
-  nombre: 'Jorge',
+  nombre: "Victor",
   edad: 40,
-  color: 'azul'
-}
+  color: "azul",
+};
 
 const stack = {
-  javascript : 'React.js',
-  python: 'Flask',
-  nodejs: 'Express.js',
-}
+  javascript: "React.js",
+  python: "Flask",
+  nodejs: "Express.js",
+  color: "rojo",
+};
 
-console.log({ ...persona, ...stack})
+console.log({ ...persona, ...stack });
 
-console.log({ persona, stack})
+console.log({ persona, stack });
 
+// Template strings (template literals)
+// Forma moderna de crear cadenas de texto usando backticks(`) -> altGr + }
+// ${} -> Permite insertar variables o valores directamente
 
+const nombre = "Victor";
+const mensaje = "¡Hola " + nombre + ", bienvenido!";
+
+console.log(mensaje);
+
+const mensaje2 = `Hola ${nombre}, bienvenido`;
+
+console.log(mensaje2);
+
+const a = 90;
+const b = 47;
+// const suma2 = a + b
+
+console.log(`La suma es ${a + b}`);
