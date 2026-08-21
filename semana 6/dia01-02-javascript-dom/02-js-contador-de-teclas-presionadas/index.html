@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Javascript + DOM: Contador de teclas presionadas</title>
+
+    <style>
+      h1 {
+        font-size: 60px;
+      }
+
+      h2 {
+        font-size: 60px;
+      }
+
+      #contador {
+        display: block;
+        color: orangered;
+        font-size: 70px;
+        font-weight: bold;
+        margin-top: 20px;
+      }
+
+      #ultimaTecla {
+        display: block;
+        color: blue;
+        font-size: 70px;
+        margin-top: 35px;
+      }
+
+      #codigoTecla {
+        display: block;
+        font-size: 70px;
+        margin-top: 35px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Contador de teclas</h1>
+
+    <h2>JS Key detect</h2>
+
+    <span id="contador">0</span>
+
+    <span id="ultimaTecla">e</span>
+
+    <span id="codigoTecla">55</span>
+
+    <script>
+      const contador = document.getElementById("contador");
+      const ultimaTecla = document.getElementById("ultimaTecla");
+      const codigoTecla = document.getElementById("codigoTecla");
+
+      let total = 0;
+
+      document.addEventListener("keydown", function (event) {
+        total++;
+
+        contador.textContent = total;
+        ultimaTecla.textContent = event.key;
+        codigoTecla.textContent = event.keyCode;
+      });
+    </script>
+  </body>
+</html>
