@@ -1,10 +1,10 @@
 const taskInput = document.getElementById("task-input");
-//const taskInput = document.getElementById('#task-input')
+// const taskInput = document.querySelector('#task-input')
 const taskAdd = document.querySelector(".task__add");
 const taskList = document.querySelector(".task__list");
 
-//EVENTOS
-//ELEMENTO.addEventListener(NOMBRE_EVENTO, CALLBACK)
+// EVENTOS
+// ELEMENTO.addEventListener(NOMBRE_EVENTO, CALLBACK)
 
 taskAdd.addEventListener("click", function (event) {
   // Se ejecutará cuando hagamos click en el botón 'Añadir tarea'
@@ -28,10 +28,12 @@ taskAdd.addEventListener("click", function (event) {
   const button = document.createElement("button");
   button.textContent = "Borrar";
   li.appendChild(button);
-  button.addEventListener("Click", function (event) {
-    event.stopPropagation();
-    li.remove();
-  });
+
+  // button.addEventListener('click', function(event) {
+  //   event.stopPropagation()
+  //   li.remove()
+  // })
+
   taskList.appendChild(li);
 
   taskInput.value = "";
@@ -43,25 +45,20 @@ taskAdd.addEventListener("click", function (event) {
   // document.body.appendChild(button)
 });
 
-//Todo: 04 permitir al boton borrar remover una tarea de la lista
-taskList.addEventListener("click", function (event) {
-  console.log("Hice click en cualquier parte de la lista del ul");
+// TODO: 04 permitir al botón borrar remover una tarea de la lista
 
-  const target = event.target; //Emeneto presionado
+taskList.addEventListener("click", function (event) {
+  // console.log('Hice click en cualquier parte de la lista del ul')
+
+  const target = event.target; // Elemento presionado
 
   if (target.tagName === "BUTTON") {
-    console.log("Eliminado tarea...");
+    console.log("Eliminando tarea...");
     target.parentElement.remove();
   }
 
-  if (target.tagName === "INPUT" && target.type === "checkbook") {
+  if (target.tagName === "INPUT" && target.type === "checkbox") {
     console.log("Completando tarea...");
-    target.classList.taggle("checked");
+    target.classList.toggle("checked");
   }
 });
-
-// button.addEventListener('click', function(event) {
-//   event.stopPropagation()  // Evita propagación
-//   li.remove()              // Elimina la tarea
-//   console.log(`🗑️ Tarea eliminada: "${span.textContent}"`)
-// })
