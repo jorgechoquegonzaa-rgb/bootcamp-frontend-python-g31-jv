@@ -1,11 +1,152 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Dragon Ball CRUD</title>
+  <link rel="stylesheet" href="estilos.css">
 </head>
+
 <body>
-  
+  <main class="contenedor">
+
+    <!-- ================= ENCABEZADO ================= -->
+    <header class="encabezado">
+      <div>
+        <p class="maraton">MARATÓN G31 - 2026</p>
+        <h1>Dragon Ball CRUD <span class="esfera">●</span></h1>
+        <p class="descripcion">
+          Gestiona tus personajes de Dragon Ball <span>🟠</span>
+        </p>
+      </div>
+
+      <div class="contador-box">
+        <strong id="contador">0</strong>
+        <span>PERSONAJES</span>
+      </div>
+    </header>
+
+    <div class="contenido">
+
+      <!-- ================= COLUMNA IZQUIERDA ================= -->
+      <aside class="izquierda">
+
+        <section class="panel formulario-panel">
+          <h2 class="titulo naranja">
+            <span class="icono-persona">♙</span>
+            <span id="tituloFormulario">NUEVO PERSONAJE</span>
+          </h2>
+
+          <form id="formPersonaje">
+            <input type="hidden" id="personajeId">
+
+            <div class="campo">
+              <label for="nombre">Nombre</label>
+              <input
+                id="nombre"
+                type="text"
+                placeholder="Ej: Goku"
+                required
+              >
+            </div>
+
+            <div class="campo">
+              <label for="imagen">Imagen (URL)</label>
+              <input
+                id="imagen"
+                type="url"
+                placeholder="https://dragonball-api.com/..."
+                required
+              >
+            </div>
+
+            <div class="campo">
+              <label for="raza">Raza</label>
+              <input
+                id="raza"
+                type="text"
+                placeholder="Ej: Saiyan"
+                required
+              >
+            </div>
+
+            <!-- Género es OPCIONAL: no afecta los 3 campos obligatorios -->
+            <div class="campo">
+              <label for="genero">Género <span class="opcional">(opcional)</span></label>
+              <select id="genero">
+                <option value="">Elegir</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <button id="submitBtn" class="btn-agregar" type="submit">
+              <span>＋</span> Agregar Personaje
+            </button>
+
+            <button id="cancelBtn" class="btn-cancelar oculto" type="button">
+              ✕ Cancelar Edición
+            </button>
+          </form>
+        </section>
+
+        <!-- ================= ESTRUCTURA JSON ================= -->
+        <section class="panel">
+          <h2 class="titulo azul">
+            <span class="icono-json">♧</span>
+            Estructura del JSON
+          </h2>
+
+          <pre id="jsonEjemplo">{
+  "name": "Goku",
+  "image": "https://...jpg",
+  "race": "Saiyan"
+}</pre>
+        </section>
+
+      </aside>
+
+      <!-- ================= COLUMNA DERECHA ================= -->
+      <section class="derecha">
+
+        <div class="titulo-lista">
+          <h2>LISTA DE PERSONAJES</h2>
+          <span></span>
+        </div>
+
+        <div id="loading" class="loading">
+          <div class="spinner"></div>
+          Cargando personajes...
+        </div>
+
+        <div id="lista"></div>
+
+        <div id="vacio" class="vacio oculto">
+          <div>😅</div>
+          <h3>Sin personajes aún</h3>
+          <p>¡Agrega tu primer guerrero del universo Dragon Ball!</p>
+        </div>
+
+        <!-- ================= PAGINACIÓN ================= -->
+        <nav id="paginacion" class="paginacion oculto" aria-label="Paginación">
+          <button id="btnPrimera" title="Primera página">|◀</button>
+          <button id="btnAnterior">‹ <span>Anterior</span></button>
+          <div id="numerosPaginas"></div>
+          <button id="btnSiguiente"><span>Siguiente</span> ›</button>
+          <button id="btnUltima" title="Última página">▶|</button>
+        </nav>
+
+      </section>
+    </div>
+
+    <footer>
+      <p>🐉 Proyecto Final - Semana 08 - JavaScript, DOM y Asincronía</p>
+      <p>Bootcamp Frontend Python G31 JV - Victor Villazón</p>
+    </footer>
+
+  </main>
+
+  <script src="main.js"></script>
 </body>
 </html>

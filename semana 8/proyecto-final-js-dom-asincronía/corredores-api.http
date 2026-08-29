@@ -1,14 +1,41 @@
-### DRAGON BALL CRUD - PRUEBAS DE API
+### SEMANA 08 - DRAGON BALL CRUD
+### APIBox
 
-### 1. Listar todos los personajes
+### 1. LISTAR
 GET https://apibox.vercel.app/YXyfxSNN9Z1CBUusBSs2w9XgnAdvw2jZ/api/dragonball
 
-### 2. Crear un nuevo personaje
+###
+
+### 2. CREAR
 POST https://apibox.vercel.app/YXyfxSNN9Z1CBUusBSs2w9XgnAdvw2jZ/api/dragonball
 Content-Type: application/json
 
 {
-  "name": "Goku",
-  "image": "https://www.mercadolibre.com.pe/sh-figuarts-dbz-super-saiyan-son-goku-30-the-games-begin/p/MPE62256042",
-  "race": "Saiyayin"
+  "name": "Vegeta",
+  "image": "https://dragonball-api.com/characters/vegeta_normal.webp",
+  "race": "Saiyan",
+  "gender": "Male"
 }
+
+###
+
+### 3. OBTENER POR ID
+GET https://apibox.vercel.app/YXyfxSNN9Z1CBUusBSs2w9XgnAdvw2jZ/api/dragonball/c7b3fc58-cf38-4325-b0b2-b397ffd8a4d9
+
+###
+
+### 4. ACTUALIZAR
+PUT https://apibox.vercel.app/YXyfxSNN9Z1CBUusBSs2w9XgnAdvw2jZ/api/dragonball/c7b3fc58-cf38-4325-b0b2-b397ffd8a4d9
+Content-Type: application/json
+
+{
+  "name": "Goku",
+  "image": "https://dragonball-api.com/characters/goku_normal.webp",
+  "race": "Saiyan",
+  "gender": "Male"
+}
+
+###
+
+### 5. ELIMINAR
+DELETE https://apibox.vercel.app/YXyfxSNN9Z1CBUusBSs2w9XgnAdvw2jZ/api/dragonball/c7b3fc58-cf38-4325-b0b2-b397ffd8a4d9
