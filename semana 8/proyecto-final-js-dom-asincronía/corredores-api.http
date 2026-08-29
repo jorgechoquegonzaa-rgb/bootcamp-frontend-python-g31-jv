@@ -1,0 +1,14 @@
+### DRAGON BALL CRUD - PRUEBAS DE API
+
+### 1. Listar todos los personajes
+GET https://apibox.vercel.app/YXyfxSNN9Z1CBUusBSs2w9XgnAdvw2jZ/api/dragonball
+
+### 2. Crear un nuevo personaje
+POST https://apibox.vercel.app/YXyfxSNN9Z1CBUusBSs2w9XgnAdvw2jZ/api/dragonball
+Content-Type: application/json
+
+{
+  "name": "Goku",
+  "image": "https://www.mercadolibre.com.pe/sh-figuarts-dbz-super-saiyan-son-goku-30-the-games-begin/p/MPE62256042",
+  "race": "Saiyayin"
+}

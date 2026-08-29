@@ -64,5 +64,6 @@ formulario.addEventListener("submit", function (event) {
 
   // Mostrar la caja de resultado
   resultadoContainer.classList.remove("hidden");
-
+  
 });
+
