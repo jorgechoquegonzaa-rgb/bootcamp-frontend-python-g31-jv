@@ -1,328 +1,1026 @@
-// ============================================
-// PROYECTO FINAL - DRAGON BALL CRUD
-// CORREGIDO PARA NETLIFY
-// ============================================
+// ============================================================
+// DRAGON BALL CRUD
+// Semana 08 - JavaScript, DOM y Asincronía
+//
+// APIBox = almacenamiento principal del CRUD
+// Dragon Ball API = respaldo para obtener imágenes reales
+// ============================================================
 
-// ============================================
-// 1. CONFIGURACIÓN DE LA API
-// ============================================
 const API_URL =
   "https://apibox.vercel.app/YXyfxSNN9Z1CBUusBSs2w9XgnAdvw2jZ/api/dragonball";
 
-// ============================================
-// 2. REFERENCIAS A ELEMENTOS HTML
-// ============================================
+const DRAGONBALL_API =
+  "https://dragonball-api.com/api/characters";
+
+const POR_PAGINA = 5;
+
+let personajes = [];
+let paginaActual = 1;
+
+// ============================================================
+// ELEMENTOS DEL DOM
+// ============================================================
+
 const form = document.getElementById("formPersonaje");
-const lista = document.getElementById("lista");
-const contador = document.getElementById("contador");
-const loading = document.getElementById("loading");
-const vacio = document.getElementById("vacio");
+
 const personajeId = document.getElementById("personajeId");
+
 const nombre = document.getElementById("nombre");
 const imagen = document.getElementById("imagen");
 const raza = document.getElementById("raza");
 const genero = document.getElementById("genero");
+
 const submitBtn = document.getElementById("submitBtn");
 const cancelBtn = document.getElementById("cancelBtn");
 
-// ============================================
-// 3. FUNCIÓN PARA OBTENER PERSONAJES (GET)
-// ============================================
-const obtenerPersonajes = async () => {
+const lista = document.getElementById("lista");
+const contador = document.getElementById("contador");
+
+const loading = document.getElementById("loading");
+const vacio = document.getElementById("vacio");
+
+const paginacion = document.getElementById("paginacion");
+const numerosPagina = document.getElementById("numerosPagina");
+
+const mensaje = document.getElementById("mensaje");
+
+const btnPrimera = document.getElementById("btnPrimera");
+const btnAnterior = document.getElementById("btnAnterior");
+const btnSiguiente = document.getElementById("btnSiguiente");
+const btnUltima = document.getElementById("btnUltima");
+
+// ============================================================
+// INICIAR
+// ============================================================
+
+document.addEventListener("DOMContentLoaded", () => {
+  cargarPersonajes();
+});
+
+// ============================================================
+// GET - LISTAR PERSONAJES DESDE APIBox
+// ============================================================
+
+async function cargarPersonajes() {
+
+  mostrarLoading(true);
+
   try {
-    loading.classList.remove("hidden");
-    lista.innerHTML = "";
 
-    console.log("🔍 Conectando a:", API_URL);
-
-    const response = await fetch(API_URL, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        // 👇 NUEVO: Enviar origen para CORS
-        Origin: window.location.origin,
-      },
-    });
-
-    console.log("📡 Estado:", response.status);
+    const response = await fetch(API_URL);
 
     if (!response.ok) {
-      throw new Error(`Error HTTP: ${response.status}`);
+      throw new Error(`HTTP ${response.status}`);
     }
 
-    const personajes = await response.json();
-    console.log("✅ Personajes cargados:", personajes.length);
+    const data = await response.json();
 
-    loading.classList.add("hidden");
-    contador.textContent = personajes.length;
+    // APIBox normalmente devuelve un arreglo.
+    if (Array.isArray(data)) {
+      personajes = data;
+    }
 
-    renderizarPersonajes(personajes);
-    return personajes;
+    // Compatibilidad por si la API devuelve items.
+    else if (Array.isArray(data.items)) {
+      personajes = data.items;
+    }
+
+    // Compatibilidad por si devuelve data.
+    else if (Array.isArray(data.data)) {
+      personajes = data.data;
+    }
+
+    else {
+      personajes = [];
+    }
+
+    paginaActual = 1;
+
+    renderizar();
+
   } catch (error) {
-    console.error("❌ Error al obtener personajes:", error);
-    loading.classList.add("hidden");
 
-    // 👇 NUEVO: Mensaje de error más claro
-    lista.innerHTML = `
-      <li class="text-center py-8">
-        <p class="text-red-500 font-semibold text-lg">⚠️ No se pudieron cargar los personajes</p>
-        <p class="text-gray-500 text-sm mt-2">Verifica tu conexión y que APIBox esté disponible.</p>
-        <button onclick="obtenerPersonajes()" class="mt-4 bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition">
-          🔄 Reintentar
-        </button>
-      </li>
+    console.error("Error al cargar personajes:", error);
+
+    lista.innerHTML = "";
+
+    vacio.classList.remove("hidden");
+
+    vacio.innerHTML = `
+      <strong>⚠️ No se pudieron cargar los personajes</strong>
+      <span>
+        Verifica tu conexión y que APIBox esté disponible.
+      </span>
     `;
-    return [];
-  }
-};
 
-// ============================================
-// 4. FUNCIÓN PARA RENDERIZAR PERSONAJES
-// ============================================
-const renderizarPersonajes = (personajes = []) => {
+    paginacion.classList.add("hidden");
+
+    mostrarError(
+      "No se pudieron cargar los personajes desde APIBox."
+    );
+
+  } finally {
+
+    mostrarLoading(false);
+  }
+}
+
+// ============================================================
+// RENDERIZAR PERSONAJES
+// ============================================================
+
+function renderizar() {
+
+  contador.textContent = personajes.length;
+
   lista.innerHTML = "";
 
   if (personajes.length === 0) {
+
     vacio.classList.remove("hidden");
+
+    paginacion.classList.add("hidden");
+
     return;
   }
 
   vacio.classList.add("hidden");
 
-  personajes.forEach((personaje) => {
-    const li = document.createElement("li");
-    li.className =
-      "personaje-card flex items-center gap-4 bg-white border border-orange-200 rounded-xl px-4 py-3 hover:border-orange-400 transition-colors";
+  const totalPaginas =
+    Math.ceil(personajes.length / POR_PAGINA);
 
-    const imgHtml = personaje.image
-      ? `<img src="${personaje.image}" alt="${personaje.name}" class="personaje-img" onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\\'personaje-img-placeholder\\'>${personaje.name.charAt(0).toUpperCase()}</span>'">`
-      : `<span class="personaje-img-placeholder">${personaje.name.charAt(0).toUpperCase()}</span>`;
+  if (paginaActual > totalPaginas) {
+    paginaActual = totalPaginas;
+  }
 
-    li.innerHTML = `
-      <div class="shrink-0">
-        ${imgHtml}
-      </div>
-      <div class="flex-1 min-w-0">
-        <p class="text-sm font-bold truncate text-gray-800">${personaje.name}</p>
-        <div class="flex flex-wrap items-center gap-2 mt-1">
-          <span class="badge-raza">${personaje.race || "Desconocido"}</span>
-          ${personaje.gender ? `<span class="badge-genero">${personaje.gender}</span>` : ""}
-        </div>
-      </div>
-      <div class="flex items-center gap-2 shrink-0">
-        <button data-action="editar" data-id="${personaje.id}" class="text-xs bg-blue-50 text-blue-600 px-3 py-1 rounded-lg hover:bg-blue-100 transition-colors cursor-pointer">
-          ✏️ Editar
-        </button>
-        <button data-action="eliminar" data-id="${personaje.id}" class="text-xs bg-red-50 text-red-600 px-3 py-1 rounded-lg hover:bg-red-100 transition-colors cursor-pointer">
-          🗑️ Eliminar
-        </button>
-      </div>
-    `;
+  const inicio =
+    (paginaActual - 1) * POR_PAGINA;
 
-    lista.appendChild(li);
+  const personajesPagina =
+    personajes.slice(
+      inicio,
+      inicio + POR_PAGINA
+    );
+
+  personajesPagina.forEach((personaje) => {
+
+    lista.appendChild(
+      crearTarjeta(personaje)
+    );
+
   });
 
-  document.querySelectorAll('[data-action="editar"]').forEach((btn) => {
-    btn.addEventListener("click", () => editarPersonaje(btn.dataset.id));
-  });
+  actualizarPaginacion(totalPaginas);
+}
 
-  document.querySelectorAll('[data-action="eliminar"]').forEach((btn) => {
-    btn.addEventListener("click", () => eliminarPersonaje(btn.dataset.id));
-  });
-};
+// ============================================================
+// CREAR TARJETA
+// ============================================================
 
-// ============================================
-// 5. FUNCIÓN PARA CREAR PERSONAJE (POST)
-// ============================================
-const crearPersonaje = async (personaje) => {
-  try {
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Origin: window.location.origin,
-      },
-      body: JSON.stringify(personaje),
+function crearTarjeta(personaje) {
+
+  const li = document.createElement("li");
+
+  li.className = "personaje-card";
+
+  const id = personaje.id;
+
+  const nom =
+    personaje.name || "Sin nombre";
+
+  const race =
+    personaje.race || "Desconocida";
+
+  const gender =
+    personaje.gender || "";
+
+  const url =
+    typeof personaje.image === "string"
+      ? personaje.image.trim()
+      : "";
+
+  // ==========================================================
+  // IMAGEN
+  // ==========================================================
+
+  if (url) {
+
+    const img = document.createElement("img");
+
+    img.className = "personaje-img";
+
+    img.src = url;
+
+    img.alt = nom;
+
+    img.loading = "lazy";
+
+    const placeholder =
+      document.createElement("div");
+
+    placeholder.className =
+      "personaje-placeholder hidden";
+
+    placeholder.textContent = "DB";
+
+    li.appendChild(img);
+
+    li.appendChild(placeholder);
+
+    // --------------------------------------------------------
+    // SI LA IMAGEN DE APIBox FALLA
+    // BUSCAR IMAGEN REAL EN DRAGON BALL API
+    // --------------------------------------------------------
+
+    img.addEventListener("error", async () => {
+
+      img.style.display = "none";
+
+      const imagenReal =
+        await obtenerImagenDragonBall(nom);
+
+      if (imagenReal) {
+
+        img.src = imagenReal;
+
+        img.style.display = "block";
+
+        placeholder.classList.add("hidden");
+
+      } else {
+
+        placeholder.classList.remove("hidden");
+      }
+
     });
 
-    if (!response.ok) {
-      throw new Error(`Error HTTP: ${response.status}`);
+  } else {
+
+    const placeholder =
+      document.createElement("div");
+
+    placeholder.className =
+      "personaje-placeholder";
+
+    placeholder.textContent = "DB";
+
+    li.appendChild(placeholder);
+  }
+
+  // ==========================================================
+  // INFORMACIÓN
+  // ==========================================================
+
+  const datos =
+    document.createElement("div");
+
+  datos.className = "personaje-info";
+
+  const titulo =
+    document.createElement("h3");
+
+  titulo.textContent = nom;
+
+  const badges =
+    document.createElement("div");
+
+  badges.className = "badges";
+
+  // RAZA
+
+  const badgeRaza =
+    document.createElement("span");
+
+  badgeRaza.className =
+    "badge badge-raza";
+
+  badgeRaza.textContent = race;
+
+  badges.appendChild(badgeRaza);
+
+  // GÉNERO
+
+  if (gender) {
+
+    const badgeGenero =
+      document.createElement("span");
+
+    badgeGenero.className =
+      "badge";
+
+    if (gender === "Female") {
+
+      badgeGenero.classList.add(
+        "badge-female"
+      );
+
+    } else {
+
+      badgeGenero.classList.add(
+        "badge-genero"
+      );
     }
 
-    const nuevoPersonaje = await response.json();
-    console.log("✅ Personaje creado:", nuevoPersonaje);
+    badgeGenero.textContent = gender;
 
-    await obtenerPersonajes();
-    return nuevoPersonaje;
-  } catch (error) {
-    console.error("❌ Error al crear personaje:", error);
-    alert(`❌ Error al crear personaje: ${error.message}`);
+    badges.appendChild(badgeGenero);
   }
-};
 
-// ============================================
-// 6. FUNCIÓN PARA EDITAR PERSONAJE
-// ============================================
-const editarPersonaje = async (id) => {
+  datos.appendChild(titulo);
+
+  datos.appendChild(badges);
+
+  li.appendChild(datos);
+
+  // ==========================================================
+  // BOTONES
+  // ==========================================================
+
+  const acciones =
+    document.createElement("div");
+
+  acciones.className = "acciones";
+
+  // EDITAR
+
+  const btnEditar =
+    document.createElement("button");
+
+  btnEditar.type = "button";
+
+  btnEditar.className =
+    "btn-accion btn-editar";
+
+  btnEditar.innerHTML =
+    "✎ &nbsp;Editar";
+
+  btnEditar.addEventListener(
+    "click",
+    () => editarPersonaje(id)
+  );
+
+  // ELIMINAR
+
+  const btnEliminar =
+    document.createElement("button");
+
+  btnEliminar.type = "button";
+
+  btnEliminar.className =
+    "btn-accion btn-eliminar";
+
+  btnEliminar.innerHTML =
+    "♜ &nbsp;Eliminar";
+
+  btnEliminar.addEventListener(
+    "click",
+    () => eliminarPersonaje(id)
+  );
+
+  acciones.appendChild(btnEditar);
+
+  acciones.appendChild(btnEliminar);
+
+  li.appendChild(acciones);
+
+  return li;
+}
+
+// ============================================================
+// OBTENER IMAGEN REAL DESDE DRAGON BALL API
+// ============================================================
+
+async function obtenerImagenDragonBall(nombrePersonaje) {
+
   try {
-    const response = await fetch(`${API_URL}/${id}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Origin: window.location.origin,
-      },
-    });
+
+    const url =
+      `${DRAGONBALL_API}?name=${encodeURIComponent(
+        nombrePersonaje
+      )}`;
+
+    const response =
+      await fetch(url);
 
     if (!response.ok) {
-      throw new Error(`Error HTTP: ${response.status}`);
+      return null;
     }
 
-    const personaje = await response.json();
+    const data =
+      await response.json();
 
-    personajeId.value = personaje.id;
-    nombre.value = personaje.name || "";
-    imagen.value = personaje.image || "";
-    raza.value = personaje.race || "";
-    genero.value = personaje.gender || "";
+    // Dependiendo de la respuesta,
+    // puede venir en items, characters o como arreglo.
 
-    submitBtn.textContent = "🔄 Actualizar Personaje";
-    submitBtn.className =
-      "flex-1 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2.5 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer";
-    cancelBtn.classList.remove("hidden");
+    let resultados = [];
 
-    form.scrollIntoView({ behavior: "smooth" });
-  } catch (error) {
-    console.error("❌ Error al editar personaje:", error);
-    alert(`❌ Error al cargar el personaje: ${error.message}`);
-  }
-};
+    if (Array.isArray(data)) {
 
-// ============================================
-// 7. FUNCIÓN PARA ACTUALIZAR PERSONAJE (PUT)
-// ============================================
-const actualizarPersonaje = async (id, personaje) => {
-  try {
-    const response = await fetch(`${API_URL}/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Origin: window.location.origin,
-      },
-      body: JSON.stringify(personaje),
-    });
+      resultados = data;
 
-    if (!response.ok) {
-      throw new Error(`Error HTTP: ${response.status}`);
+    } else if (Array.isArray(data.items)) {
+
+      resultados = data.items;
+
+    } else if (Array.isArray(data.characters)) {
+
+      resultados = data.characters;
+
     }
 
-    const personajeActualizado = await response.json();
-    console.log("✅ Personaje actualizado:", personajeActualizado);
+    // Buscar coincidencia exacta.
 
-    await obtenerPersonajes();
-    return personajeActualizado;
-  } catch (error) {
-    console.error("❌ Error al actualizar personaje:", error);
-    alert(`❌ Error al actualizar personaje: ${error.message}`);
-  }
-};
+    const personajeEncontrado =
+      resultados.find(
+        (personaje) =>
+          personaje.name?.toLowerCase() ===
+          nombrePersonaje.toLowerCase()
+      );
 
-// ============================================
-// 8. FUNCIÓN PARA ELIMINAR PERSONAJE (DELETE)
-// ============================================
-const eliminarPersonaje = async (id) => {
-  if (!confirm("⚠️ ¿Estás seguro de eliminar este personaje?")) {
-    return;
-  }
+    if (
+      personajeEncontrado &&
+      personajeEncontrado.image
+    ) {
 
-  try {
-    const response = await fetch(`${API_URL}/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Origin: window.location.origin,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error HTTP: ${response.status}`);
+      return personajeEncontrado.image;
     }
 
-    console.log(`🗑️ Personaje con ID ${id} eliminado`);
-    await obtenerPersonajes();
+    // Si no hay coincidencia exacta,
+    // usar el primer resultado.
+
+    if (
+      resultados.length > 0 &&
+      resultados[0].image
+    ) {
+
+      return resultados[0].image;
+    }
+
+    return null;
+
   } catch (error) {
-    console.error("❌ Error al eliminar personaje:", error);
-    alert(`❌ Error al eliminar personaje: ${error.message}`);
+
+    console.warn(
+      "No se pudo obtener imagen alternativa:",
+      error
+    );
+
+    return null;
   }
-};
+}
 
-// ============================================
-// 9. FUNCIÓN PARA CANCELAR EDICIÓN
-// ============================================
-const cancelarEdicion = () => {
-  form.reset();
-  personajeId.value = "";
+// ============================================================
+// POST - CREAR PERSONAJE
+// ============================================================
 
-  submitBtn.textContent = "➕ Agregar Personaje";
-  submitBtn.className =
-    "flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-2.5 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer";
-  cancelBtn.classList.add("hidden");
-};
+async function guardarPersonaje(event) {
 
-// ============================================
-// 10. MANEJAR EL ENVÍO DEL FORMULARIO
-// ============================================
-form.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const nombreValue = nombre.value.trim();
-  const imagenValue = imagen.value.trim();
-  const razaValue = raza.value.trim();
+  const datos = {
 
-  if (!nombreValue) {
-    alert("⚠️ Por favor, ingresa el nombre del personaje");
-    nombre.focus();
-    return;
-  }
+    name: nombre.value.trim(),
 
-  if (!imagenValue) {
-    alert("⚠️ Por favor, ingresa la URL de la imagen");
-    imagen.focus();
-    return;
-  }
+    image: imagen.value.trim(),
 
-  if (!razaValue) {
-    alert("⚠️ Por favor, ingresa la raza del personaje");
-    raza.focus();
-    return;
-  }
-
-  const personajeData = {
-    name: nombreValue,
-    image: imagenValue,
-    race: razaValue,
-    gender: genero.value || "",
+    race: raza.value.trim()
   };
 
-  const id = personajeId.value;
+  // Género opcional
 
-  if (id) {
-    await actualizarPersonaje(id, personajeData);
-  } else {
-    await crearPersonaje(personajeData);
+  if (genero.value) {
+
+    datos.gender =
+      genero.value;
   }
 
-  cancelarEdicion();
-});
+  // Validación
 
-// ============================================
-// 11. EVENTO: CANCELAR EDICIÓN
-// ============================================
-cancelBtn.addEventListener("click", cancelarEdicion);
+  if (
+    !datos.name ||
+    !datos.image ||
+    !datos.race
+  ) {
 
-// ============================================
-// 12. INICIALIZAR LA APLICACIÓN
-// ============================================
-console.log("🐉 Dragon Ball CRUD iniciado!");
-console.log("📡 Conectando a la API en:", API_URL);
-console.log("🌐 Origen:", window.location.origin);
+    mostrarError(
+      "Nombre, Imagen y Raza son obligatorios."
+    );
 
-obtenerPersonajes();
+    return;
+  }
+
+  const id =
+    personajeId.value.trim();
+
+  const edicion =
+    Boolean(id);
+
+  submitBtn.disabled = true;
+
+  submitBtn.textContent =
+    edicion
+      ? "Actualizando..."
+      : "Agregando...";
+
+  try {
+
+    const response = await fetch(
+
+      edicion
+        ? `${API_URL}/${encodeURIComponent(id)}`
+        : API_URL,
+
+      {
+
+        method:
+          edicion
+            ? "PUT"
+            : "POST",
+
+        headers: {
+
+          "Content-Type":
+            "application/json"
+        },
+
+        body:
+          JSON.stringify(datos)
+      }
+    );
+
+    if (!response.ok) {
+
+      throw new Error(
+        `HTTP ${response.status}`
+      );
+    }
+
+    mostrarOk(
+
+      edicion
+        ? "Personaje actualizado correctamente."
+        : "Personaje agregado correctamente."
+    );
+
+    limpiarFormulario();
+
+    await cargarPersonajes();
+
+  } catch (error) {
+
+    console.error(error);
+
+    mostrarError(
+      "No se pudo guardar el personaje en APIBox."
+    );
+
+  } finally {
+
+    submitBtn.disabled = false;
+
+    submitBtn.innerHTML =
+      "＋ &nbsp;Agregar Personaje";
+  }
+}
+
+// ============================================================
+// EDITAR PERSONAJE
+// ============================================================
+
+async function editarPersonaje(id) {
+
+  try {
+
+    const response =
+      await fetch(
+        `${API_URL}/${encodeURIComponent(id)}`
+      );
+
+    if (!response.ok) {
+
+      throw new Error(
+        `HTTP ${response.status}`
+      );
+    }
+
+    const personaje =
+      await response.json();
+
+    personajeId.value =
+      personaje.id || id;
+
+    nombre.value =
+      personaje.name || "";
+
+    imagen.value =
+      personaje.image || "";
+
+    raza.value =
+      personaje.race || "";
+
+    genero.value =
+      personaje.gender || "";
+
+    submitBtn.innerHTML =
+      "✎ &nbsp;Actualizar Personaje";
+
+    cancelBtn.classList.remove(
+      "hidden"
+    );
+
+    window.scrollTo({
+
+      top: 0,
+
+      behavior: "smooth"
+    });
+
+    nombre.focus();
+
+  } catch (error) {
+
+    console.error(error);
+
+    mostrarError(
+      "No se pudo obtener el personaje para editar."
+    );
+  }
+}
+
+// ============================================================
+// PUT - ACTUALIZAR
+// ============================================================
+
+async function actualizarPersonaje(
+  id,
+  datos
+) {
+
+  const response =
+    await fetch(
+      `${API_URL}/${encodeURIComponent(id)}`,
+      {
+
+        method: "PUT",
+
+        headers: {
+
+          "Content-Type":
+            "application/json"
+        },
+
+        body:
+          JSON.stringify(datos)
+      }
+    );
+
+  if (!response.ok) {
+
+    throw new Error(
+      `HTTP ${response.status}`
+    );
+  }
+
+  return response.json();
+}
+
+// ============================================================
+// DELETE - ELIMINAR
+// ============================================================
+
+async function eliminarPersonaje(id) {
+
+  const personaje =
+    personajes.find(
+      (p) =>
+        String(p.id) ===
+        String(id)
+    );
+
+  const nombreConfirmacion =
+    personaje?.name ||
+    "este personaje";
+
+  const confirmar =
+    confirm(
+      `¿Deseas eliminar a ${nombreConfirmacion}?`
+    );
+
+  if (!confirmar) {
+    return;
+  }
+
+  try {
+
+    const response =
+      await fetch(
+        `${API_URL}/${encodeURIComponent(id)}`,
+        {
+          method: "DELETE"
+        }
+      );
+
+    if (!response.ok) {
+
+      throw new Error(
+        `HTTP ${response.status}`
+      );
+    }
+
+    mostrarOk(
+      "Personaje eliminado correctamente."
+    );
+
+    await cargarPersonajes();
+
+  } catch (error) {
+
+    console.error(error);
+
+    mostrarError(
+      "No se pudo eliminar el personaje."
+    );
+  }
+}
+
+// ============================================================
+// CANCELAR EDICIÓN
+// ============================================================
+
+cancelBtn.addEventListener(
+  "click",
+  limpiarFormulario
+);
+
+function limpiarFormulario() {
+
+  form.reset();
+
+  personajeId.value = "";
+
+  submitBtn.innerHTML =
+    "＋ &nbsp;Agregar Personaje";
+
+  cancelBtn.classList.add(
+    "hidden"
+  );
+}
+
+// ============================================================
+// PAGINACIÓN
+// ============================================================
+
+function actualizarPaginacion(
+  totalPaginas
+) {
+
+  if (totalPaginas <= 1) {
+
+    paginacion.classList.add(
+      "hidden"
+    );
+
+    return;
+  }
+
+  paginacion.classList.remove(
+    "hidden"
+  );
+
+  btnPrimera.disabled =
+    paginaActual === 1;
+
+  btnAnterior.disabled =
+    paginaActual === 1;
+
+  btnSiguiente.disabled =
+    paginaActual === totalPaginas;
+
+  btnUltima.disabled =
+    paginaActual === totalPaginas;
+
+  numerosPagina.innerHTML = "";
+
+  for (
+    let i = 1;
+    i <= totalPaginas;
+    i++
+  ) {
+
+    const boton =
+      document.createElement("button");
+
+    boton.type = "button";
+
+    boton.textContent = i;
+
+    if (
+      i === paginaActual
+    ) {
+
+      boton.classList.add(
+        "activo"
+      );
+    }
+
+    boton.addEventListener(
+      "click",
+      () => {
+
+        paginaActual = i;
+
+        renderizar();
+      }
+    );
+
+    numerosPagina.appendChild(
+      boton
+    );
+  }
+}
+
+// ============================================================
+// BOTONES DE PAGINACIÓN
+// ============================================================
+
+btnPrimera.addEventListener(
+  "click",
+  () => {
+
+    paginaActual = 1;
+
+    renderizar();
+  }
+);
+
+btnAnterior.addEventListener(
+  "click",
+  () => {
+
+    if (paginaActual > 1) {
+
+      paginaActual--;
+
+      renderizar();
+    }
+  }
+);
+
+btnSiguiente.addEventListener(
+  "click",
+  () => {
+
+    const total =
+      Math.ceil(
+        personajes.length /
+        POR_PAGINA
+      );
+
+    if (
+      paginaActual < total
+    ) {
+
+      paginaActual++;
+
+      renderizar();
+    }
+  }
+);
+
+btnUltima.addEventListener(
+  "click",
+  () => {
+
+    paginaActual =
+      Math.ceil(
+        personajes.length /
+        POR_PAGINA
+      );
+
+    renderizar();
+  }
+);
+
+// ============================================================
+// ESTADO DE CARGA
+// ============================================================
+
+function mostrarLoading(estado) {
+
+  loading.classList.toggle(
+    "hidden",
+    !estado
+  );
+
+  if (estado) {
+
+    lista.innerHTML = "";
+
+    vacio.classList.add(
+      "hidden"
+    );
+
+    paginacion.classList.add(
+      "hidden"
+    );
+  }
+}
+
+// ============================================================
+// MENSAJES
+// ============================================================
+
+let timerMensaje;
+
+function mostrarOk(texto) {
+
+  mensaje.className =
+    "mensaje ok";
+
+  mensaje.textContent =
+    "✓ " + texto;
+
+  clearTimeout(
+    timerMensaje
+  );
+
+  timerMensaje =
+    setTimeout(
+      () => {
+
+        mensaje.classList.add(
+          "hidden"
+        );
+
+      },
+      3000
+    );
+}
+
+function mostrarError(texto) {
+
+  mensaje.className =
+    "mensaje error";
+
+  mensaje.textContent =
+    "⚠ " + texto;
+
+  clearTimeout(
+    timerMensaje
+  );
+
+  timerMensaje =
+    setTimeout(
+      () => {
+
+        mensaje.classList.add(
+          "hidden"
+        );
+
+      },
+      5000
+    );
+}
+
+// ============================================================
+// SEGURIDAD
+// ============================================================
+
+function esc(valor) {
+
+  return String(valor)
+
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
+
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
+
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
+
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
+
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
+}
+
+// ============================================================
+// EVENTO DEL FORMULARIO
+// ============================================================
+
+form.addEventListener(
+  "submit",
+  guardarPersonaje
+);
