@@ -1,8 +1,11 @@
-/* =========================================================
-   DRAGON BALL CRUD
-   HTML + CSS + JavaScript puro
-   Diseño inspirado en la imagen de referencia
-   ========================================================= */
+/* ============================================
+  DRAGON BALL CRUD - ESTILOS PERSONALIZADOS
+  SEMANA 08 - MARATÓN G31
+   ============================================ */
+
+/* ============================================
+  1. CONFIGURACIÓN GENERAL
+   ============================================ */
 
 * {
   box-sizing: border-box;
@@ -10,513 +13,839 @@
   padding: 0;
 }
 
-body {
-  font-family: Arial, "Segoe UI", sans-serif;
-  background: #fff;
-  color: #222;
+:root {
+  --naranja: #ff6a00;
+  --naranja-hover: #e85e00;
+  --azul: #1670c5;
+  --azul-claro: #e8f3ff;
+  --verde: #dff7e8;
+  --verde-texto: #18864b;
+  --rosa: #ffe9f1;
+  --rosa-texto: #c43c70;
+  --borde: #dddddd;
+  --texto: #111827;
+  --gris: #6b7280;
 }
 
-button,
-input,
-select {
-  font: inherit;
+body {
+  min-height: 100vh;
+  background: #ffffff;
+  color: var(--texto);
+  font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ============================================
+  2. CONTENEDOR PRINCIPAL
+   ============================================ */
 
 .contenedor {
-  width: min(1120px, calc(100% - 48px));
+  width: min(1180px, calc(100% - 50px));
   margin: 0 auto;
   padding: 30px 0 20px;
 }
 
-/* ================= ENCABEZADO ================= */
+/* ============================================
+  3. ENCABEZADO
+   ============================================ */
 
 .encabezado {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 28px;
+  margin-bottom: 26px;
 }
 
-.maraton {
-  font-size: 12px;
+.marca {
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 1px;
-  color: #555;
-  margin-bottom: 5px;
+  color: #3f4b59;
+  margin-bottom: 4px;
 }
 
 .encabezado h1 {
   font-size: 40px;
-  line-height: 1.1;
-  color: #111;
+  line-height: 1.05;
   font-weight: 800;
   letter-spacing: -1px;
 }
 
-.esfera {
-  color: #f59e0b;
-  font-size: 26px;
-  margin-left: 3px;
+.punto {
+  color: var(--naranja);
+  font-size: 20px;
 }
 
-.descripcion {
-  color: #666;
-  font-size: 15px;
+.encabezado p {
   margin-top: 7px;
+  color: #5b6570;
+  font-size: 16px;
 }
 
-.contador-box {
+.esfera {
+  color: var(--naranja);
+  font-size: 19px;
+}
+
+/* ============================================
+  4. CONTADOR DE PERSONAJES
+   ============================================ */
+
+.total-box {
   text-align: center;
-  min-width: 100px;
+  min-width: 115px;
 }
 
-.contador-box strong {
+.total-box strong {
   display: block;
-  font-size: 38px;
+  font-size: 40px;
   line-height: 1;
-  color: #111;
+  font-weight: 800;
 }
 
-.contador-box span {
+.total-box span {
   display: block;
+  color: #7b7f84;
   font-size: 12px;
-  color: #888;
   margin-top: 5px;
 }
 
-/* ================= DISTRIBUCIÓN ================= */
+/* ============================================
+  5. MENSAJE DE ÉXITO / ERROR
+   ============================================ */
 
-.contenido {
-  display: grid;
-  grid-template-columns: 315px 1fr;
-  gap: 42px;
+.mensaje {
+  position: fixed;
+  top: 18px;
+  right: 20px;
+  z-index: 1000;
+
+  max-width: 360px;
+
+  padding: 13px 16px;
+
+  border-radius: 7px;
+
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+
+  font-size: 13px;
+  font-weight: 700;
 }
 
-.izquierda {
+.mensaje.ok {
+  background: #e8f8ee;
+  color: #187340;
+  border: 1px solid #a9dfbd;
+}
+
+.mensaje.error {
+  background: #fff0f0;
+  color: #b52424;
+  border: 1px solid #efaaaa;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ============================================
+  6. DISTRIBUCIÓN PRINCIPAL
+   ============================================ */
+
+.layout {
+  display: grid;
+
+  grid-template-columns: 305px 1fr;
+
+  gap: 40px;
+
+  align-items: start;
+}
+
+.columna-izquierda {
   display: flex;
   flex-direction: column;
   gap: 18px;
 }
 
-/* ================= PANELES ================= */
-
-.panel {
-  border: 1px solid #dedede;
-  border-radius: 11px;
-  padding: 18px;
-  background: #fff;
-}
-
-.titulo {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  text-transform: uppercase;
-  font-size: 14px;
-  font-weight: 800;
-  margin-bottom: 18px;
-}
-
-.naranja {
-  color: #e86c1a;
-}
-
-.azul {
-  color: #2375bf;
-}
-
-.icono-persona,
-.icono-json {
-  font-size: 22px;
-}
-
-/* ================= FORMULARIO ================= */
-
-.campo {
-  margin-bottom: 16px;
-}
-
-.campo label {
-  display: block;
-  font-size: 13px;
-  font-weight: 700;
-  color: #333;
-  margin-bottom: 7px;
-}
-
-.opcional {
-  font-size: 10px;
-  color: #999;
-  font-weight: normal;
-}
-
-.campo input,
-.campo select {
-  width: 100%;
-  height: 40px;
-  border: 1px solid #d8d8d8;
-  border-radius: 6px;
-  padding: 0 12px;
-  outline: none;
-  background: white;
-  color: #444;
-}
-
-.campo input::placeholder {
-  color: #aaa;
-}
-
-.campo input:focus,
-.campo select:focus {
-  border-color: #f97316;
-  box-shadow: 0 0 0 2px rgba(249, 115, 22, .10);
-}
-
-.btn-agregar,
-.btn-cancelar {
-  width: 100%;
-  height: 40px;
-  border: 0;
-  border-radius: 7px;
-  cursor: pointer;
-  font-weight: 700;
-  transition: .2s;
-}
-
-.btn-agregar {
-  background: #ff7000;
-  color: #fff;
-  box-shadow: 0 2px 5px rgba(255, 112, 0, .2);
-}
-
-.btn-agregar:hover {
-  background: #e85f00;
-}
-
-.btn-agregar span {
-  font-size: 21px;
-  vertical-align: -1px;
-}
-
-.btn-cancelar {
-  margin-top: 9px;
-  background: #e5e5e5;
-  color: #555;
-}
-
-.btn-cancelar:hover {
-  background: #d5d5d5;
-}
-
-.oculto {
-  display: none !important;
-}
-
-/* ================= JSON ================= */
-
-pre {
-  background: #fafafa;
-  border: 1px solid #e4e4e4;
-  border-radius: 7px;
-  padding: 13px;
-  font-family: Consolas, "Courier New", monospace;
-  font-size: 12px;
-  line-height: 1.55;
-  color: #333;
-  white-space: pre-wrap;
-}
-
-/* ================= TÍTULO LISTA ================= */
-
-.titulo-lista {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin: 3px 0 12px;
-}
-
-.titulo-lista h2 {
-  color: #2776bf;
-  font-size: 15px;
-  font-weight: 800;
-  white-space: nowrap;
-}
-
-.titulo-lista > span {
-  height: 1px;
-  background: #e3e3e3;
-  flex: 1;
-}
-
-/* ================= TARJETAS ================= */
-
-.personaje {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  min-height: 112px;
-  padding: 10px;
-  margin-bottom: 12px;
-  border: 1px solid #dedede;
-  border-radius: 11px;
-  background: #fff;
-  transition: .2s;
-}
-
-.personaje:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,.08);
-}
-
-.personaje img {
-  width: 96px;
-  height: 96px;
-  min-width: 96px;
-  border-radius: 8px;
-  object-fit: cover;
-  background: #e8f3ff;
-}
-
-.datos {
-  flex: 1;
+.columna-lista {
   min-width: 0;
 }
 
-.datos h3 {
-  font-size: 20px;
+/* ============================================
+  7. PANELES
+   ============================================ */
+
+.panel {
+  border: 1px solid var(--borde);
+
+  border-radius: 11px;
+
+  background: #ffffff;
+
+  padding: 18px;
+}
+
+.formulario-panel {
+  min-height: 425px;
+}
+
+.panel h2 {
+  font-size: 15px;
+
   font-weight: 800;
-  margin-bottom: 12px;
-  color: #222;
+
+  margin-bottom: 24px;
+
+  letter-spacing: 0.2px;
 }
 
-.badges {
+.titulo-naranja {
+  color: #f06413;
+}
+
+.titulo-azul {
+  color: var(--azul);
+}
+
+/* ============================================
+  8. FORMULARIO
+   ============================================ */
+
+#formPersonaje {
   display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+  flex-direction: column;
 }
 
-.badge {
-  display: inline-block;
-  padding: 5px 12px;
-  border-radius: 6px;
-  font-size: 12px;
+#formPersonaje label {
+  font-size: 13px;
+
   font-weight: 700;
+
+  margin-bottom: 7px;
 }
 
-.badge-raza {
-  background: #e8f3ff;
-  color: #2573bb;
+#formPersonaje label small {
+  font-weight: 400;
+
+  color: #7b8188;
 }
 
-.badge-genero {
-  background: #e8f8ef;
-  color: #238b5b;
+/* ============================================
+  9. INPUTS
+   ============================================ */
+
+#formPersonaje input,
+#formPersonaje select {
+  width: 100%;
+
+  height: 39px;
+
+  border: 1px solid #d3d3d3;
+
+  border-radius: 6px;
+
+  padding: 0 12px;
+
+  margin-bottom: 14px;
+
+  background: #ffffff;
+
+  color: #30343a;
+
+  font-size: 14px;
+
+  outline: none;
 }
 
-.acciones {
+#formPersonaje input:focus,
+#formPersonaje select:focus {
+  border-color: #ff7a22;
+
+  box-shadow: 0 0 0 2px rgba(255, 106, 0, 0.12);
+}
+
+#formPersonaje input::placeholder {
+  color: #9aa1a8;
+}
+
+/* ============================================
+  10. BOTÓN AGREGAR
+   ============================================ */
+
+.form-buttons {
+  width: 100%;
+}
+
+.btn-agregar {
+  width: 100%;
+
+  height: 39px;
+
+  border: 0;
+
+  border-radius: 6px;
+
+  background: var(--naranja);
+
+  color: #ffffff;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow: 0 2px 5px rgba(255, 106, 0, 0.25);
+
+  transition: 0.2s;
+}
+
+.btn-agregar:hover {
+  background: var(--naranja-hover);
+
+  transform: translateY(-1px);
+}
+
+.btn-agregar:disabled {
+  opacity: 0.6;
+
+  cursor: not-allowed;
+
+  transform: none;
+}
+
+/* ============================================
+  11. BOTÓN CANCELAR
+   ============================================ */
+
+.btn-cancelar {
+  width: 100%;
+
+  height: 39px;
+
+  margin-top: 8px;
+
+  border: 0;
+
+  border-radius: 6px;
+
+  background: #e9eaec;
+
+  color: #4b5158;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.btn-cancelar:hover {
+  background: #dcdde0;
+}
+
+/* ============================================
+  12. ESTRUCTURA JSON
+   ============================================ */
+
+.json-panel {
+  min-height: 195px;
+}
+
+.json-panel pre {
+  background: #fafafa;
+
+  border: 1px solid #e0e0e0;
+
+  border-radius: 6px;
+
+  padding: 15px 12px;
+
+  color: #24282d;
+
+  font-family: Consolas, "Courier New", monospace;
+
+  font-size: 12px;
+
+  line-height: 1.55;
+
+  white-space: pre-wrap;
+}
+
+/* ============================================
+  13. TÍTULO LISTA DE PERSONAJES
+   ============================================ */
+
+.lista-titulo {
   display: flex;
+
+  align-items: center;
+
+  gap: 18px;
+
+  margin: 7px 0 12px;
+}
+
+.lista-titulo h2 {
+  color: var(--azul);
+
+  font-size: 16px;
+
+  font-weight: 800;
+
+  white-space: nowrap;
+}
+
+.lista-titulo div {
+  height: 1px;
+
+  background: #e0e0e0;
+
+  flex: 1;
+}
+
+/* ============================================
+  14. LISTA
+   ============================================ */
+
+.lista-personajes {
+  list-style: none;
+
+  display: flex;
+
+  flex-direction: column;
+
   gap: 11px;
 }
 
-.btn-editar,
-.btn-eliminar {
-  height: 37px;
-  padding: 0 13px;
-  border-radius: 6px;
-  background: white;
-  cursor: pointer;
-  font-size: 13px;
+/* ============================================
+  15. TARJETA DEL PERSONAJE
+   ============================================ */
+
+.personaje-card {
+  min-height: 112px;
+
+  border: 1px solid #dedede;
+
+  border-radius: 11px;
+
+  background: #ffffff;
+
+  padding: 10px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 18px;
+
+  transition: 0.2s;
+}
+
+.personaje-card:hover {
+  border-color: #c8c8c8;
+
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* ============================================
+  16. IMAGEN DEL PERSONAJE
+   ============================================ */
+
+.personaje-img {
+  width: 94px;
+
+  height: 94px;
+
+  min-width: 94px;
+
+  border-radius: 8px;
+
+  object-fit: cover;
+
+  background: var(--azul-claro);
+
+  display: block;
+}
+
+/* ============================================
+  17. IMAGEN DE RESPALDO
+   ============================================ */
+
+.personaje-placeholder {
+  width: 94px;
+
+  height: 94px;
+
+  min-width: 94px;
+
+  border-radius: 8px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: var(--azul-claro);
+
+  color: #2677b9;
+
+  font-size: 31px;
+
+  font-weight: 500;
+}
+
+/* ============================================
+  18. INFORMACIÓN DEL PERSONAJE
+   ============================================ */
+
+.personaje-info {
+  flex: 1;
+
+  min-width: 0;
+}
+
+.personaje-info h3 {
+  font-size: 19px;
+
+  font-weight: 800;
+
+  margin-bottom: 9px;
+}
+
+/* ============================================
+  19. BADGES
+   ============================================ */
+
+.badges {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 8px;
+}
+
+.badge {
+  display: inline-flex;
+
+  align-items: center;
+
+  padding: 5px 10px;
+
+  border-radius: 4px;
+
+  font-size: 11px;
+
   font-weight: 700;
 }
 
+/* RAZA */
+
+.badge-raza {
+  background: var(--azul-claro);
+
+  color: #1769b2;
+}
+
+/* GÉNERO MASCULINO */
+
+.badge-genero {
+  background: var(--verde);
+
+  color: var(--verde-texto);
+}
+
+/* GÉNERO FEMENINO */
+
+.badge-female {
+  background: var(--rosa);
+
+  color: var(--rosa-texto);
+}
+
+/* ============================================
+  20. BOTONES EDITAR / ELIMINAR
+   ============================================ */
+
+.acciones {
+  display: flex;
+
+  gap: 10px;
+
+  margin-left: auto;
+}
+
+.btn-accion {
+  height: 37px;
+
+  padding: 0 15px;
+
+  border-radius: 6px;
+
+  background: #ffffff;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+/* EDITAR */
+
 .btn-editar {
-  color: #2374bd;
-  border: 1px solid #75aadd;
+  color: #1470c5;
+
+  border: 1px solid #6da9df;
 }
 
 .btn-editar:hover {
-  background: #eff7ff;
+  background: #eef7ff;
+
+  border-color: #1470c5;
 }
 
+/* ELIMINAR */
+
 .btn-eliminar {
-  color: #df4e4e;
-  border: 1px solid #e7a0a0;
+  color: #e33b3b;
+
+  border: 1px solid #ef9a9a;
 }
 
 .btn-eliminar:hover {
-  background: #fff1f1;
+  background: #fff3f3;
+
+  border-color: #e33b3b;
 }
 
-.btn-editar svg,
-.btn-eliminar svg {
-  width: 15px;
-  height: 15px;
-  vertical-align: -3px;
-  margin-right: 4px;
-}
+/* ============================================
+  21. ESTADO DE CARGA
+   ============================================ */
 
-/* ================= ESTADOS ================= */
+.estado {
+  min-height: 250px;
 
-.loading {
-  min-height: 120px;
   display: flex;
-  justify-content: center;
+
   align-items: center;
-  color: #777;
+
+  justify-content: center;
+
+  gap: 10px;
+
+  color: #6c737b;
+
   font-size: 14px;
 }
 
 .spinner {
   width: 22px;
+
   height: 22px;
-  border: 3px solid #eee;
-  border-top-color: #f97316;
+
+  border: 3px solid #dddddd;
+
+  border-top-color: var(--naranja);
+
   border-radius: 50%;
-  animation: girar .8s linear infinite;
-  margin-right: 8px;
+
+  animation: spin 0.8s linear infinite;
 }
 
-@keyframes girar {
-  to { transform: rotate(360deg); }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
+
+/* ============================================
+  22. MENSAJE SIN PERSONAJES
+   ============================================ */
 
 .vacio {
-  border: 2px dashed #ddd;
+  border: 2px dashed #dddddd;
+
   border-radius: 10px;
+
+  padding: 50px 20px;
+
   text-align: center;
-  padding: 45px 15px;
-  color: #999;
+
+  color: #969da5;
 }
 
-.vacio div {
-  font-size: 30px;
-  margin-bottom: 7px;
+.vacio strong,
+.vacio span {
+  display: block;
 }
 
-.vacio h3 {
-  font-size: 17px;
-  margin-bottom: 5px;
-}
-
-.vacio p {
+.vacio span {
   font-size: 13px;
+
+  margin-top: 5px;
 }
 
-/* ================= PAGINACIÓN ================= */
+/* ============================================
+  23. PAGINACIÓN
+   ============================================ */
 
 .paginacion {
   display: flex;
+
   justify-content: center;
+
   align-items: center;
+
   gap: 5px;
-  margin-top: 16px;
+
+  margin-top: 15px;
 }
 
-.paginacion button,
-.numero {
-  min-width: 34px;
+.paginacion button {
   height: 34px;
-  border: 1px solid #e2e2e2;
+
+  padding: 0 10px;
+
+  background: #ffffff;
+
+  border: 1px solid #dddddd;
+
   border-radius: 5px;
-  background: #fff;
-  color: #555;
+
+  color: #4d555d;
+
   cursor: pointer;
+
   font-size: 12px;
+
+  transition: 0.2s;
 }
 
-.paginacion button:hover:not(:disabled),
-.numero:hover {
-  background: #f4f4f4;
+.paginacion button:hover:not(:disabled) {
+  border-color: #ff7a22;
+
+  color: #ff6a00;
 }
 
 .paginacion button:disabled {
-  opacity: .4;
+  color: #c7c7c7;
+
   cursor: not-allowed;
+
+  background: #fafafa;
 }
 
-#numerosPaginas {
+.numeros {
   display: flex;
-  gap: 5px;
+
+  gap: 4px;
 }
 
-.numero.activo {
-  background: #ff7000;
-  border-color: #ff7000;
-  color: #fff;
-  font-weight: 800;
+.numeros button.activo {
+  background: var(--naranja);
+
+  color: #ffffff;
+
+  border-color: var(--naranja);
 }
 
-.numero.puntos {
-  border: 0;
-  pointer-events: none;
-}
-
-/* ================= FOOTER ================= */
+/* ============================================
+  24. FOOTER
+   ============================================ */
 
 footer {
   text-align: center;
-  color: #888;
+
+  color: #70777e;
+
   font-size: 11px;
+
   line-height: 1.6;
-  margin-top: 28px;
+
+  margin-top: 22px;
 }
 
-/* ================= RESPONSIVE ================= */
+/* ============================================
+  25. RESPONSIVE - TABLET
+   ============================================ */
 
 @media (max-width: 900px) {
-  .contenido {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 650px) {
   .contenedor {
-    width: calc(100% - 24px);
-    padding-top: 20px;
+    width: min(94%, 700px);
   }
 
-  .encabezado h1 {
-    font-size: 29px;
-  }
+  .layout {
+    grid-template-columns: 1fr;
 
-  .contenido {
     gap: 20px;
   }
 
-  .personaje {
+  .columna-izquierda {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .encabezado h1 {
+    font-size: 34px;
+  }
+}
+
+/* ============================================
+  26. RESPONSIVE - CELULAR
+   ============================================ */
+
+@media (max-width: 620px) {
+  .contenedor {
+    width: 94%;
+
+    padding-top: 20px;
+  }
+
+  .encabezado {
+    flex-direction: column;
+
+    gap: 15px;
+  }
+
+  .total-box {
+    text-align: left;
+  }
+
+  .columna-izquierda {
+    display: block;
+  }
+
+  .json-panel {
+    margin-top: 18px;
+  }
+
+  .personaje-card {
+    align-items: flex-start;
+
     flex-wrap: wrap;
   }
 
   .acciones {
     width: 100%;
-    justify-content: flex-end;
+
+    margin-left: 0;
   }
 
-  .paginacion button span {
-    display: none;
-  }
-}
-
-@media (max-width: 430px) {
-  .encabezado {
-    align-items: center;
-  }
-
-  .contador-box strong {
-    font-size: 30px;
-  }
-
-  .personaje img {
-    width: 75px;
-    height: 75px;
-    min-width: 75px;
-  }
-
-  .acciones {
-    justify-content: stretch;
-  }
-
-  .btn-editar,
-  .btn-eliminar {
+  .btn-accion {
     flex: 1;
+  }
+
+  .personaje-img,
+  .personaje-placeholder {
+    width: 75px;
+
+    height: 75px;
+
+    min-width: 75px;
   }
 }

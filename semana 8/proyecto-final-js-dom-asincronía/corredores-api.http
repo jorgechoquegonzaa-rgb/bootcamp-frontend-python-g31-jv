@@ -1,41 +1,77 @@
-### SEMANA 08 - DRAGON BALL CRUD
-### APIBox
+### DRAGON BALL CRUD - APIBox
+### Ejecuta estos POST UNA SOLA VEZ si necesitas crear los 12 registros.
+@base=https://apibox.vercel.app/YXyfxSNN9Z1CBUusBSs2w9XgnAdvw2jZ/api/dragonball
 
-### 1. LISTAR
-GET https://apibox.vercel.app/YXyfxSNN9Z1CBUusBSs2w9XgnAdvw2jZ/api/dragonball
+### LISTAR
+GET {{base}}
 
-###
-
-### 2. CREAR
-POST https://apibox.vercel.app/YXyfxSNN9Z1CBUusBSs2w9XgnAdvw2jZ/api/dragonball
+### 1 GOKU
+POST {{base}}
 Content-Type: application/json
+{"name":"Goku","image":"https://dragonball-api.com/characters/goku_normal.webp","race":"Saiyan","gender":"Male"}
 
-{
-  "name": "Vegeta",
-  "image": "https://dragonball-api.com/characters/vegeta_normal.webp",
-  "race": "Saiyan",
-  "gender": "Male"
-}
-
-###
-
-### 3. OBTENER POR ID
-GET https://apibox.vercel.app/YXyfxSNN9Z1CBUusBSs2w9XgnAdvw2jZ/api/dragonball/c7b3fc58-cf38-4325-b0b2-b397ffd8a4d9
-
-###
-
-### 4. ACTUALIZAR
-PUT https://apibox.vercel.app/YXyfxSNN9Z1CBUusBSs2w9XgnAdvw2jZ/api/dragonball/c7b3fc58-cf38-4325-b0b2-b397ffd8a4d9
+### 2 VEGETA
+POST {{base}}
 Content-Type: application/json
+{"name":"Vegeta","image":"https://dragonball-api.com/characters/vegeta_normal.webp","race":"Saiyan","gender":"Male"}
 
-{
-  "name": "Goku",
-  "image": "https://dragonball-api.com/characters/goku_normal.webp",
-  "race": "Saiyan",
-  "gender": "Male"
-}
+### 3 PICCOLO
+POST {{base}}
+Content-Type: application/json
+{"name":"Piccolo","image":"https://dragonball-api.com/characters/picolo_normal.webp","race":"Namekian","gender":"Male"}
 
-###
+### 4 BULMA
+POST {{base}}
+Content-Type: application/json
+{"name":"Bulma","image":"https://dragonball-api.com/characters/bulma.webp","race":"Human","gender":"Female"}
 
-### 5. ELIMINAR
-DELETE https://apibox.vercel.app/YXyfxSNN9Z1CBUusBSs2w9XgnAdvw2jZ/api/dragonball/c7b3fc58-cf38-4325-b0b2-b397ffd8a4d9
+### 5 GOHAN
+POST {{base}}
+Content-Type: application/json
+{"name":"Gohan","image":"https://dragonball-api.com/characters/gohan.webp","race":"Saiyan","gender":"Male"}
+
+### 6 FREEZER
+POST {{base}}
+Content-Type: application/json
+{"name":"Freezer","image":"https://dragonball-api.com/characters/Freezer.webp","race":"Frieza Race","gender":"Male"}
+
+### 7 ZARBON
+POST {{base}}
+Content-Type: application/json
+{"name":"Zarbon","image":"https://dragonball-api.com/characters/zarbon.webp","race":"Frieza Race","gender":"Male"}
+
+### 8 DODORIA
+POST {{base}}
+Content-Type: application/json
+{"name":"Dodoria","image":"https://dragonball-api.com/characters/dodoria.webp","race":"Frieza Race","gender":"Male"}
+
+### 9 GINYU
+POST {{base}}
+Content-Type: application/json
+{"name":"Ginyu","image":"https://dragonball-api.com/characters/ginyu.webp","race":"Frieza Race","gender":"Male"}
+
+### 10 CELULA
+POST {{base}}
+Content-Type: application/json
+{"name":"Celula","image":"https://dragonball-api.com/characters/celula.webp","race":"Android","gender":"Male"}
+
+### 11 KRILLIN
+POST {{base}}
+Content-Type: application/json
+{"name":"Krillin","image":"https://dragonball-api.com/characters/Krilin_Universo7.webp","race":"Human","gender":"Male"}
+
+### 12 TENSHINHAN
+POST {{base}}
+Content-Type: application/json
+{"name":"Tenshinhan","image":"https://dragonball-api.com/characters/Tenshinhan_Universo7.webp","race":"Human","gender":"Male"}
+
+### OBTENER POR ID
+GET {{base}}/ID
+
+### ACTUALIZAR POR ID
+PUT {{base}}/ID
+Content-Type: application/json
+{"name":"Goku","image":"https://dragonball-api.com/characters/goku_normal.webp","race":"Saiyan","gender":"Male"}
+
+### ELIMINAR POR ID
+DELETE {{base}}/ID

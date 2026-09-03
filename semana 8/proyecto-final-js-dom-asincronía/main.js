@@ -1,49 +1,72 @@
 // ============================================================
-// SEMANA 08 - PROYECTO FINAL
-// Dragon Ball CRUD
-// JavaScript puro + DOM + Fetch + Asincronía
+// DRAGON BALL CRUD
+// Semana 08 - JavaScript, DOM y Asincronía
+//
+// APIBox = almacenamiento principal del CRUD
+// Dragon Ball API = respaldo para obtener imágenes reales
 // ============================================================
 
 const API_URL =
   "https://apibox.vercel.app/YXyfxSNN9Z1CBUusBSs2w9XgnAdvw2jZ/api/dragonball";
 
-const form = document.getElementById("formPersonaje");
-const personajeId = document.getElementById("personajeId");
-const nombre = document.getElementById("nombre");
-const imagen = document.getElementById("imagen");
-const raza = document.getElementById("raza");
-const genero = document.getElementById("genero");
+const DRAGONBALL_API =
+  "https://dragonball-api.com/api/characters";
 
-const lista = document.getElementById("lista");
-const contador = document.getElementById("contador");
-const loading = document.getElementById("loading");
-const vacio = document.getElementById("vacio");
-
-const submitBtn = document.getElementById("submitBtn");
-const cancelBtn = document.getElementById("cancelBtn");
-const tituloFormulario = document.getElementById("tituloFormulario");
-
-const paginacion = document.getElementById("paginacion");
-const btnPrimera = document.getElementById("btnPrimera");
-const btnAnterior = document.getElementById("btnAnterior");
-const btnSiguiente = document.getElementById("btnSiguiente");
-const btnUltima = document.getElementById("btnUltima");
-const numerosPaginas = document.getElementById("numerosPaginas");
-
-// 5 personajes por página, como en la imagen.
 const POR_PAGINA = 5;
 
 let personajes = [];
 let paginaActual = 1;
 
 // ============================================================
-// GET - LISTAR PERSONAJES
+// ELEMENTOS DEL DOM
 // ============================================================
 
-async function listarPersonajes() {
+const form = document.getElementById("formPersonaje");
+
+const personajeId = document.getElementById("personajeId");
+
+const nombre = document.getElementById("nombre");
+const imagen = document.getElementById("imagen");
+const raza = document.getElementById("raza");
+const genero = document.getElementById("genero");
+
+const submitBtn = document.getElementById("submitBtn");
+const cancelBtn = document.getElementById("cancelBtn");
+
+const lista = document.getElementById("lista");
+const contador = document.getElementById("contador");
+
+const loading = document.getElementById("loading");
+const vacio = document.getElementById("vacio");
+
+const paginacion = document.getElementById("paginacion");
+const numerosPagina = document.getElementById("numerosPagina");
+
+const mensaje = document.getElementById("mensaje");
+
+const btnPrimera = document.getElementById("btnPrimera");
+const btnAnterior = document.getElementById("btnAnterior");
+const btnSiguiente = document.getElementById("btnSiguiente");
+const btnUltima = document.getElementById("btnUltima");
+
+// ============================================================
+// INICIAR
+// ============================================================
+
+document.addEventListener("DOMContentLoaded", () => {
+  cargarPersonajes();
+});
+
+// ============================================================
+// GET - LISTAR PERSONAJES DESDE APIBox
+// ============================================================
+
+async function cargarPersonajes() {
+
   mostrarLoading(true);
 
   try {
+
     const response = await fetch(API_URL);
 
     if (!response.ok) {
@@ -52,76 +75,102 @@ async function listarPersonajes() {
 
     const data = await response.json();
 
-    // APIBox devuelve un arreglo.
-    // Estas dos alternativas hacen el código más resistente.
+    // APIBox normalmente devuelve un arreglo.
     if (Array.isArray(data)) {
       personajes = data;
-    } else if (Array.isArray(data.items)) {
+    }
+
+    // Compatibilidad por si la API devuelve items.
+    else if (Array.isArray(data.items)) {
       personajes = data.items;
-    } else if (Array.isArray(data.data)) {
+    }
+
+    // Compatibilidad por si devuelve data.
+    else if (Array.isArray(data.data)) {
       personajes = data.data;
-    } else {
+    }
+
+    else {
       personajes = [];
     }
 
-    if (paginaActual > Math.ceil(personajes.length / POR_PAGINA)) {
-      paginaActual = 1;
-    }
+    paginaActual = 1;
 
-    renderizarPersonajes();
+    renderizar();
 
   } catch (error) {
-    console.error(error);
 
-    lista.innerHTML = `
-      <div class="vacio">
-        <div>⚠️</div>
-        <h3>Error al cargar los personajes</h3>
-        <p>Verifica tu conexión o la disponibilidad de APIBox.</p>
-      </div>
+    console.error("Error al cargar personajes:", error);
+
+    lista.innerHTML = "";
+
+    vacio.classList.remove("hidden");
+
+    vacio.innerHTML = `
+      <strong>⚠️ No se pudieron cargar los personajes</strong>
+      <span>
+        Verifica tu conexión y que APIBox esté disponible.
+      </span>
     `;
 
-    paginacion.classList.add("oculto");
+    paginacion.classList.add("hidden");
+
+    mostrarError(
+      "No se pudieron cargar los personajes desde APIBox."
+    );
 
   } finally {
+
     mostrarLoading(false);
   }
 }
 
 // ============================================================
-// RENDERIZAR
+// RENDERIZAR PERSONAJES
 // ============================================================
 
-function renderizarPersonajes() {
+function renderizar() {
+
   contador.textContent = personajes.length;
+
   lista.innerHTML = "";
 
   if (personajes.length === 0) {
-    vacio.classList.remove("oculto");
-    paginacion.classList.add("oculto");
+
+    vacio.classList.remove("hidden");
+
+    paginacion.classList.add("hidden");
+
     return;
   }
 
-  vacio.classList.add("oculto");
+  vacio.classList.add("hidden");
 
-  const totalPaginas = Math.ceil(personajes.length / POR_PAGINA);
-  const inicio = (paginaActual - 1) * POR_PAGINA;
+  const totalPaginas =
+    Math.ceil(personajes.length / POR_PAGINA);
 
-  const personajesPagina = personajes.slice(
-    inicio,
-    inicio + POR_PAGINA
-  );
+  if (paginaActual > totalPaginas) {
+    paginaActual = totalPaginas;
+  }
+
+  const inicio =
+    (paginaActual - 1) * POR_PAGINA;
+
+  const personajesPagina =
+    personajes.slice(
+      inicio,
+      inicio + POR_PAGINA
+    );
 
   personajesPagina.forEach((personaje) => {
-    lista.appendChild(crearTarjeta(personaje));
+
+    lista.appendChild(
+      crearTarjeta(personaje)
+    );
+
   });
 
-  if (totalPaginas > 1) {
-    paginacion.classList.remove("oculto");
-    actualizarPaginacion(totalPaginas);
-  } else {
-    paginacion.classList.add("oculto");
-  }
+  actualizarPaginacion(totalPaginas);
 }
 
 // ============================================================
@@ -129,220 +178,507 @@ function renderizarPersonajes() {
 // ============================================================
 
 function crearTarjeta(personaje) {
+
+  const li = document.createElement("li");
+
+  li.className = "personaje-card";
+
   const id = personaje.id;
 
-  const card = document.createElement("article");
-  card.className = "personaje";
+  const nom =
+    personaje.name || "Sin nombre";
 
-  const nombrePersonaje = personaje.name || "Sin nombre";
-  const razaPersonaje = personaje.race || "Sin raza";
-  const generoPersonaje = personaje.gender || "";
+  const race =
+    personaje.race || "Desconocida";
 
-  // Si la URL guardada no es una imagen directa,
-  // se muestra un marcador de respaldo.
-  const imagenPersonaje =
-    personaje.image ||
-    "https://placehold.co/96x96/eaf4ff/2776bf?text=DB";
+  const gender =
+    personaje.gender || "";
 
-  const generoHTML = generoPersonaje
-    ? `
-      <span class="badge badge-genero">
-        ${escaparHTML(generoPersonaje)}
-      </span>
-    `
-    : "";
+  const url =
+    typeof personaje.image === "string"
+      ? personaje.image.trim()
+      : "";
 
-  card.innerHTML = `
-    <img
-      src="${escaparHTML(imagenPersonaje)}"
-      alt="${escaparHTML(nombrePersonaje)}"
-      class="personaje-imagen"
-      onerror="this.onerror=null;this.src='https://placehold.co/96x96/eaf4ff/2776bf?text=DB';"
-    >
+  // ==========================================================
+  // IMAGEN
+  // ==========================================================
 
-    <div class="datos">
-      <h3>${escaparHTML(nombrePersonaje)}</h3>
+  if (url) {
 
-      <div class="badges">
-        <span class="badge badge-raza">
-          ${escaparHTML(razaPersonaje)}
-        </span>
+    const img = document.createElement("img");
 
-        ${generoHTML}
-      </div>
-    </div>
+    img.className = "personaje-img";
 
-    <div class="acciones">
+    img.src = url;
 
-      <button class="btn-editar" type="button">
-        <svg viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2"
-             stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 20h9"/>
-          <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/>
-        </svg>
-        Editar
-      </button>
+    img.alt = nom;
 
-      <button class="btn-eliminar" type="button">
-        <svg viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" stroke-width="2"
-             stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 6h18"/>
-          <path d="M8 6V4h8v2"/>
-          <path d="M19 6l-1 14H6L5 6"/>
-          <path d="M10 11v5"/>
-          <path d="M14 11v5"/>
-        </svg>
-        Eliminar
-      </button>
+    img.loading = "lazy";
 
-    </div>
-  `;
+    const placeholder =
+      document.createElement("div");
 
-  card.querySelector(".btn-editar")
-    .addEventListener("click", () => editarPersonaje(id));
+    placeholder.className =
+      "personaje-placeholder hidden";
 
-  card.querySelector(".btn-eliminar")
-    .addEventListener("click", () => eliminarPersonaje(id));
+    placeholder.textContent = "DB";
 
-  return card;
+    li.appendChild(img);
+
+    li.appendChild(placeholder);
+
+    // --------------------------------------------------------
+    // SI LA IMAGEN DE APIBox FALLA
+    // BUSCAR IMAGEN REAL EN DRAGON BALL API
+    // --------------------------------------------------------
+
+    img.addEventListener("error", async () => {
+
+      img.style.display = "none";
+
+      const imagenReal =
+        await obtenerImagenDragonBall(nom);
+
+      if (imagenReal) {
+
+        img.src = imagenReal;
+
+        img.style.display = "block";
+
+        placeholder.classList.add("hidden");
+
+      } else {
+
+        placeholder.classList.remove("hidden");
+      }
+
+    });
+
+  } else {
+
+    const placeholder =
+      document.createElement("div");
+
+    placeholder.className =
+      "personaje-placeholder";
+
+    placeholder.textContent = "DB";
+
+    li.appendChild(placeholder);
+  }
+
+  // ==========================================================
+  // INFORMACIÓN
+  // ==========================================================
+
+  const datos =
+    document.createElement("div");
+
+  datos.className = "personaje-info";
+
+  const titulo =
+    document.createElement("h3");
+
+  titulo.textContent = nom;
+
+  const badges =
+    document.createElement("div");
+
+  badges.className = "badges";
+
+  // RAZA
+
+  const badgeRaza =
+    document.createElement("span");
+
+  badgeRaza.className =
+    "badge badge-raza";
+
+  badgeRaza.textContent = race;
+
+  badges.appendChild(badgeRaza);
+
+  // GÉNERO
+
+  if (gender) {
+
+    const badgeGenero =
+      document.createElement("span");
+
+    badgeGenero.className =
+      "badge";
+
+    if (gender === "Female") {
+
+      badgeGenero.classList.add(
+        "badge-female"
+      );
+
+    } else {
+
+      badgeGenero.classList.add(
+        "badge-genero"
+      );
+    }
+
+    badgeGenero.textContent = gender;
+
+    badges.appendChild(badgeGenero);
+  }
+
+  datos.appendChild(titulo);
+
+  datos.appendChild(badges);
+
+  li.appendChild(datos);
+
+  // ==========================================================
+  // BOTONES
+  // ==========================================================
+
+  const acciones =
+    document.createElement("div");
+
+  acciones.className = "acciones";
+
+  // EDITAR
+
+  const btnEditar =
+    document.createElement("button");
+
+  btnEditar.type = "button";
+
+  btnEditar.className =
+    "btn-accion btn-editar";
+
+  btnEditar.innerHTML =
+    "✎ &nbsp;Editar";
+
+  btnEditar.addEventListener(
+    "click",
+    () => editarPersonaje(id)
+  );
+
+  // ELIMINAR
+
+  const btnEliminar =
+    document.createElement("button");
+
+  btnEliminar.type = "button";
+
+  btnEliminar.className =
+    "btn-accion btn-eliminar";
+
+  btnEliminar.innerHTML =
+    "♜ &nbsp;Eliminar";
+
+  btnEliminar.addEventListener(
+    "click",
+    () => eliminarPersonaje(id)
+  );
+
+  acciones.appendChild(btnEditar);
+
+  acciones.appendChild(btnEliminar);
+
+  li.appendChild(acciones);
+
+  return li;
 }
 
 // ============================================================
-// POST - CREAR
+// OBTENER IMAGEN REAL DESDE DRAGON BALL API
 // ============================================================
 
-form.addEventListener("submit", async (event) => {
+async function obtenerImagenDragonBall(nombrePersonaje) {
+
+  try {
+
+    const url =
+      `${DRAGONBALL_API}?name=${encodeURIComponent(
+        nombrePersonaje
+      )}`;
+
+    const response =
+      await fetch(url);
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const data =
+      await response.json();
+
+    // Dependiendo de la respuesta,
+    // puede venir en items, characters o como arreglo.
+
+    let resultados = [];
+
+    if (Array.isArray(data)) {
+
+      resultados = data;
+
+    } else if (Array.isArray(data.items)) {
+
+      resultados = data.items;
+
+    } else if (Array.isArray(data.characters)) {
+
+      resultados = data.characters;
+
+    }
+
+    // Buscar coincidencia exacta.
+
+    const personajeEncontrado =
+      resultados.find(
+        (personaje) =>
+          personaje.name?.toLowerCase() ===
+          nombrePersonaje.toLowerCase()
+      );
+
+    if (
+      personajeEncontrado &&
+      personajeEncontrado.image
+    ) {
+
+      return personajeEncontrado.image;
+    }
+
+    // Si no hay coincidencia exacta,
+    // usar el primer resultado.
+
+    if (
+      resultados.length > 0 &&
+      resultados[0].image
+    ) {
+
+      return resultados[0].image;
+    }
+
+    return null;
+
+  } catch (error) {
+
+    console.warn(
+      "No se pudo obtener imagen alternativa:",
+      error
+    );
+
+    return null;
+  }
+}
+
+// ============================================================
+// POST - CREAR PERSONAJE
+// ============================================================
+
+async function guardarPersonaje(event) {
+
   event.preventDefault();
 
-  const id = personajeId.value.trim();
+  const datos = {
 
-  // Los 3 campos obligatorios pedidos por el profesor.
-  const personaje = {
     name: nombre.value.trim(),
+
     image: imagen.value.trim(),
+
     race: raza.value.trim()
   };
 
-  // Género queda como campo opcional para parecerse
-  // a la imagen de referencia.
+  // Género opcional
+
   if (genero.value) {
-    personaje.gender = genero.value;
+
+    datos.gender =
+      genero.value;
   }
 
-  if (!personaje.name || !personaje.image || !personaje.race) {
-    alert("Nombre, Imagen y Raza son obligatorios.");
+  // Validación
+
+  if (
+    !datos.name ||
+    !datos.image ||
+    !datos.race
+  ) {
+
+    mostrarError(
+      "Nombre, Imagen y Raza son obligatorios."
+    );
+
     return;
   }
 
-  try {
-    submitBtn.disabled = true;
-    submitBtn.textContent = id ? "Actualizando..." : "Guardando...";
+  const id =
+    personajeId.value.trim();
 
-    if (id) {
-      await actualizarPersonaje(id, personaje);
-    } else {
-      await crearPersonaje(personaje);
+  const edicion =
+    Boolean(id);
+
+  submitBtn.disabled = true;
+
+  submitBtn.textContent =
+    edicion
+      ? "Actualizando..."
+      : "Agregando...";
+
+  try {
+
+    const response = await fetch(
+
+      edicion
+        ? `${API_URL}/${encodeURIComponent(id)}`
+        : API_URL,
+
+      {
+
+        method:
+          edicion
+            ? "PUT"
+            : "POST",
+
+        headers: {
+
+          "Content-Type":
+            "application/json"
+        },
+
+        body:
+          JSON.stringify(datos)
+      }
+    );
+
+    if (!response.ok) {
+
+      throw new Error(
+        `HTTP ${response.status}`
+      );
     }
+
+    mostrarOk(
+
+      edicion
+        ? "Personaje actualizado correctamente."
+        : "Personaje agregado correctamente."
+    );
 
     limpiarFormulario();
-    await listarPersonajes();
+
+    await cargarPersonajes();
 
   } catch (error) {
+
     console.error(error);
-    alert("No se pudo guardar el personaje.");
+
+    mostrarError(
+      "No se pudo guardar el personaje en APIBox."
+    );
 
   } finally {
+
     submitBtn.disabled = false;
 
-    if (!personajeId.value) {
-      submitBtn.innerHTML = "<span>＋</span> Agregar Personaje";
-    }
+    submitBtn.innerHTML =
+      "＋ &nbsp;Agregar Personaje";
   }
-});
-
-async function crearPersonaje(personaje) {
-  const response = await fetch(API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(personaje)
-  });
-
-  if (!response.ok) {
-    throw new Error(`POST HTTP ${response.status}`);
-  }
-
-  return response.json();
 }
 
 // ============================================================
-// GET POR ID + PREPARAR EDICIÓN
+// EDITAR PERSONAJE
 // ============================================================
 
 async function editarPersonaje(id) {
+
   try {
-    const response = await fetch(`${API_URL}/${id}`);
+
+    const response =
+      await fetch(
+        `${API_URL}/${encodeURIComponent(id)}`
+      );
 
     if (!response.ok) {
-      throw new Error(`GET ID HTTP ${response.status}`);
+
+      throw new Error(
+        `HTTP ${response.status}`
+      );
     }
 
-    const personaje = await response.json();
+    const personaje =
+      await response.json();
 
-    cargarFormulario(personaje, id);
+    personajeId.value =
+      personaje.id || id;
 
-  } catch (error) {
-    console.error(error);
+    nombre.value =
+      personaje.name || "";
 
-    // Respaldo: utilizar el personaje que ya tenemos en memoria.
-    const personaje = personajes.find(
-      item => String(item.id) === String(id)
+    imagen.value =
+      personaje.image || "";
+
+    raza.value =
+      personaje.race || "";
+
+    genero.value =
+      personaje.gender || "";
+
+    submitBtn.innerHTML =
+      "✎ &nbsp;Actualizar Personaje";
+
+    cancelBtn.classList.remove(
+      "hidden"
     );
 
-    if (personaje) {
-      cargarFormulario(personaje, id);
-    } else {
-      alert("No se pudo encontrar el personaje.");
-    }
+    window.scrollTo({
+
+      top: 0,
+
+      behavior: "smooth"
+    });
+
+    nombre.focus();
+
+  } catch (error) {
+
+    console.error(error);
+
+    mostrarError(
+      "No se pudo obtener el personaje para editar."
+    );
   }
-}
-
-function cargarFormulario(personaje, id) {
-  personajeId.value = id;
-  nombre.value = personaje.name || "";
-  imagen.value = personaje.image || "";
-  raza.value = personaje.race || "";
-  genero.value = personaje.gender || "";
-
-  tituloFormulario.textContent = "EDITAR PERSONAJE";
-
-  submitBtn.innerHTML = "<span>✓</span> Actualizar Personaje";
-  cancelBtn.classList.remove("oculto");
-
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth"
-  });
 }
 
 // ============================================================
 // PUT - ACTUALIZAR
 // ============================================================
 
-async function actualizarPersonaje(id, personaje) {
-  const response = await fetch(`${API_URL}/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(personaje)
-  });
+async function actualizarPersonaje(
+  id,
+  datos
+) {
+
+  const response =
+    await fetch(
+      `${API_URL}/${encodeURIComponent(id)}`,
+      {
+
+        method: "PUT",
+
+        headers: {
+
+          "Content-Type":
+            "application/json"
+        },
+
+        body:
+          JSON.stringify(datos)
+      }
+    );
 
   if (!response.ok) {
-    throw new Error(`PUT HTTP ${response.status}`);
+
+    throw new Error(
+      `HTTP ${response.status}`
+    );
   }
 
   return response.json();
@@ -353,30 +689,57 @@ async function actualizarPersonaje(id, personaje) {
 // ============================================================
 
 async function eliminarPersonaje(id) {
-  const personaje = personajes.find(
-    item => String(item.id) === String(id)
-  );
 
-  const nombre = personaje?.name || "este personaje";
+  const personaje =
+    personajes.find(
+      (p) =>
+        String(p.id) ===
+        String(id)
+    );
 
-  if (!confirm(`¿Deseas eliminar a ${nombre}?`)) {
+  const nombreConfirmacion =
+    personaje?.name ||
+    "este personaje";
+
+  const confirmar =
+    confirm(
+      `¿Deseas eliminar a ${nombreConfirmacion}?`
+    );
+
+  if (!confirmar) {
     return;
   }
 
   try {
-    const response = await fetch(`${API_URL}/${id}`, {
-      method: "DELETE"
-    });
+
+    const response =
+      await fetch(
+        `${API_URL}/${encodeURIComponent(id)}`,
+        {
+          method: "DELETE"
+        }
+      );
 
     if (!response.ok) {
-      throw new Error(`DELETE HTTP ${response.status}`);
+
+      throw new Error(
+        `HTTP ${response.status}`
+      );
     }
 
-    await listarPersonajes();
+    mostrarOk(
+      "Personaje eliminado correctamente."
+    );
+
+    await cargarPersonajes();
 
   } catch (error) {
+
     console.error(error);
-    alert("No se pudo eliminar el personaje.");
+
+    mostrarError(
+      "No se pudo eliminar el personaje."
+    );
   }
 }
 
@@ -384,132 +747,280 @@ async function eliminarPersonaje(id) {
 // CANCELAR EDICIÓN
 // ============================================================
 
-cancelBtn.addEventListener("click", limpiarFormulario);
+cancelBtn.addEventListener(
+  "click",
+  limpiarFormulario
+);
 
 function limpiarFormulario() {
+
   form.reset();
+
   personajeId.value = "";
 
-  tituloFormulario.textContent = "NUEVO PERSONAJE";
+  submitBtn.innerHTML =
+    "＋ &nbsp;Agregar Personaje";
 
-  submitBtn.innerHTML = "<span>＋</span> Agregar Personaje";
-  cancelBtn.classList.add("oculto");
+  cancelBtn.classList.add(
+    "hidden"
+  );
 }
 
 // ============================================================
 // PAGINACIÓN
 // ============================================================
 
-function actualizarPaginacion(totalPaginas) {
-  btnPrimera.disabled = paginaActual === 1;
-  btnAnterior.disabled = paginaActual === 1;
+function actualizarPaginacion(
+  totalPaginas
+) {
 
-  btnSiguiente.disabled = paginaActual === totalPaginas;
-  btnUltima.disabled = paginaActual === totalPaginas;
+  if (totalPaginas <= 1) {
 
-  numerosPaginas.innerHTML = "";
+    paginacion.classList.add(
+      "hidden"
+    );
 
-  const paginas = obtenerPaginas(totalPaginas);
+    return;
+  }
 
-  paginas.forEach((pagina) => {
-    if (pagina === "...") {
-      const span = document.createElement("span");
-      span.className = "numero puntos";
-      span.textContent = "...";
-      numerosPaginas.appendChild(span);
-      return;
+  paginacion.classList.remove(
+    "hidden"
+  );
+
+  btnPrimera.disabled =
+    paginaActual === 1;
+
+  btnAnterior.disabled =
+    paginaActual === 1;
+
+  btnSiguiente.disabled =
+    paginaActual === totalPaginas;
+
+  btnUltima.disabled =
+    paginaActual === totalPaginas;
+
+  numerosPagina.innerHTML = "";
+
+  for (
+    let i = 1;
+    i <= totalPaginas;
+    i++
+  ) {
+
+    const boton =
+      document.createElement("button");
+
+    boton.type = "button";
+
+    boton.textContent = i;
+
+    if (
+      i === paginaActual
+    ) {
+
+      boton.classList.add(
+        "activo"
+      );
     }
 
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "numero";
-    button.textContent = pagina;
+    boton.addEventListener(
+      "click",
+      () => {
 
-    if (pagina === paginaActual) {
-      button.classList.add("activo");
-    }
+        paginaActual = i;
 
-    button.addEventListener("click", () => {
-      paginaActual = pagina;
-      renderizarPersonajes();
-    });
+        renderizar();
+      }
+    );
 
-    numerosPaginas.appendChild(button);
-  });
+    numerosPagina.appendChild(
+      boton
+    );
+  }
 }
-
-function obtenerPaginas(total) {
-  if (total <= 5) {
-    return Array.from({ length: total }, (_, i) => i + 1);
-  }
-
-  const resultado = [1];
-
-  if (paginaActual > 3) {
-    resultado.push("...");
-  }
-
-  const inicio = Math.max(2, paginaActual - 1);
-  const fin = Math.min(total - 1, paginaActual + 1);
-
-  for (let i = inicio; i <= fin; i++) {
-    resultado.push(i);
-  }
-
-  if (paginaActual < total - 2) {
-    resultado.push("...");
-  }
-
-  resultado.push(total);
-
-  return resultado;
-}
-
-btnPrimera.addEventListener("click", () => {
-  paginaActual = 1;
-  renderizarPersonajes();
-});
-
-btnAnterior.addEventListener("click", () => {
-  if (paginaActual > 1) {
-    paginaActual--;
-    renderizarPersonajes();
-  }
-});
-
-btnSiguiente.addEventListener("click", () => {
-  const total = Math.ceil(personajes.length / POR_PAGINA);
-
-  if (paginaActual < total) {
-    paginaActual++;
-    renderizarPersonajes();
-  }
-});
-
-btnUltima.addEventListener("click", () => {
-  paginaActual = Math.ceil(personajes.length / POR_PAGINA);
-  renderizarPersonajes();
-});
 
 // ============================================================
-// UTILIDADES
+// BOTONES DE PAGINACIÓN
+// ============================================================
+
+btnPrimera.addEventListener(
+  "click",
+  () => {
+
+    paginaActual = 1;
+
+    renderizar();
+  }
+);
+
+btnAnterior.addEventListener(
+  "click",
+  () => {
+
+    if (paginaActual > 1) {
+
+      paginaActual--;
+
+      renderizar();
+    }
+  }
+);
+
+btnSiguiente.addEventListener(
+  "click",
+  () => {
+
+    const total =
+      Math.ceil(
+        personajes.length /
+        POR_PAGINA
+      );
+
+    if (
+      paginaActual < total
+    ) {
+
+      paginaActual++;
+
+      renderizar();
+    }
+  }
+);
+
+btnUltima.addEventListener(
+  "click",
+  () => {
+
+    paginaActual =
+      Math.ceil(
+        personajes.length /
+        POR_PAGINA
+      );
+
+    renderizar();
+  }
+);
+
+// ============================================================
+// ESTADO DE CARGA
 // ============================================================
 
 function mostrarLoading(estado) {
-  loading.classList.toggle("oculto", !estado);
+
+  loading.classList.toggle(
+    "hidden",
+    !estado
+  );
+
+  if (estado) {
+
+    lista.innerHTML = "";
+
+    vacio.classList.add(
+      "hidden"
+    );
+
+    paginacion.classList.add(
+      "hidden"
+    );
+  }
 }
 
-function escaparHTML(valor) {
+// ============================================================
+// MENSAJES
+// ============================================================
+
+let timerMensaje;
+
+function mostrarOk(texto) {
+
+  mensaje.className =
+    "mensaje ok";
+
+  mensaje.textContent =
+    "✓ " + texto;
+
+  clearTimeout(
+    timerMensaje
+  );
+
+  timerMensaje =
+    setTimeout(
+      () => {
+
+        mensaje.classList.add(
+          "hidden"
+        );
+
+      },
+      3000
+    );
+}
+
+function mostrarError(texto) {
+
+  mensaje.className =
+    "mensaje error";
+
+  mensaje.textContent =
+    "⚠ " + texto;
+
+  clearTimeout(
+    timerMensaje
+  );
+
+  timerMensaje =
+    setTimeout(
+      () => {
+
+        mensaje.classList.add(
+          "hidden"
+        );
+
+      },
+      5000
+    );
+}
+
+// ============================================================
+// SEGURIDAD
+// ============================================================
+
+function esc(valor) {
+
   return String(valor)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
+
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
+
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
+
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
+
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
 }
 
 // ============================================================
-// INICIO
+// EVENTO DEL FORMULARIO
 // ============================================================
 
-listarPersonajes();
+form.addEventListener(
+  "submit",
+  guardarPersonaje
+);
