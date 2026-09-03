@@ -1,10 +1,10 @@
 /* ============================================
-  DRAGON BALL CRUD - ESTILOS PERSONALIZADOS
-  SEMANA 08 - MARATÓN G31
+   DRAGON BALL CRUD - ESTILOS PERSONALIZADOS
+   SEMANA 08 - MARATÓN G31
    ============================================ */
 
 /* ============================================
-  1. CONFIGURACIÓN GENERAL
+   1. CONFIGURACIÓN GENERAL
    ============================================ */
 
 * {
@@ -34,8 +34,9 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+
 /* ============================================
-  2. CONTENEDOR PRINCIPAL
+   2. CONTENEDOR PRINCIPAL
    ============================================ */
 
 .contenedor {
@@ -44,8 +45,9 @@ body {
   padding: 30px 0 20px;
 }
 
+
 /* ============================================
-  3. ENCABEZADO
+   3. ENCABEZADO
    ============================================ */
 
 .encabezado {
@@ -86,8 +88,9 @@ body {
   font-size: 19px;
 }
 
+
 /* ============================================
-  4. CONTADOR DE PERSONAJES
+   4. CONTADOR DE PERSONAJES
    ============================================ */
 
 .total-box {
@@ -109,8 +112,9 @@ body {
   margin-top: 5px;
 }
 
+
 /* ============================================
-  5. MENSAJE DE ÉXITO / ERROR
+   5. MENSAJE DE ÉXITO / ERROR
    ============================================ */
 
 .mensaje {
@@ -147,8 +151,9 @@ body {
   display: none !important;
 }
 
+
 /* ============================================
-  6. DISTRIBUCIÓN PRINCIPAL
+   6. DISTRIBUCIÓN PRINCIPAL
    ============================================ */
 
 .layout {
@@ -171,8 +176,9 @@ body {
   min-width: 0;
 }
 
+
 /* ============================================
-  7. PANELES
+   7. PANELES
    ============================================ */
 
 .panel {
@@ -207,8 +213,9 @@ body {
   color: var(--azul);
 }
 
+
 /* ============================================
-  8. FORMULARIO
+   8. FORMULARIO
    ============================================ */
 
 #formPersonaje {
@@ -230,8 +237,9 @@ body {
   color: #7b8188;
 }
 
+
 /* ============================================
-  9. INPUTS
+   9. INPUTS
    ============================================ */
 
 #formPersonaje input,
@@ -261,15 +269,17 @@ body {
 #formPersonaje select:focus {
   border-color: #ff7a22;
 
-  box-shadow: 0 0 0 2px rgba(255, 106, 0, 0.12);
+  box-shadow:
+    0 0 0 2px rgba(255, 106, 0, 0.12);
 }
 
 #formPersonaje input::placeholder {
   color: #9aa1a8;
 }
 
+
 /* ============================================
-  10. BOTÓN AGREGAR
+   10. BOTÓN AGREGAR
    ============================================ */
 
 .form-buttons {
@@ -295,7 +305,8 @@ body {
 
   cursor: pointer;
 
-  box-shadow: 0 2px 5px rgba(255, 106, 0, 0.25);
+  box-shadow:
+    0 2px 5px rgba(255, 106, 0, 0.25);
 
   transition: 0.2s;
 }
@@ -314,8 +325,9 @@ body {
   transform: none;
 }
 
+
 /* ============================================
-  11. BOTÓN CANCELAR
+   11. BOTÓN CANCELAR
    ============================================ */
 
 .btn-cancelar {
@@ -344,8 +356,9 @@ body {
   background: #dcdde0;
 }
 
+
 /* ============================================
-  12. ESTRUCTURA JSON
+   12. ESTRUCTURA JSON
    ============================================ */
 
 .json-panel {
@@ -372,8 +385,9 @@ body {
   white-space: pre-wrap;
 }
 
+
 /* ============================================
-  13. TÍTULO LISTA DE PERSONAJES
+   13. TÍTULO LISTA DE PERSONAJES
    ============================================ */
 
 .lista-titulo {
@@ -404,8 +418,9 @@ body {
   flex: 1;
 }
 
+
 /* ============================================
-  14. LISTA
+   14. LISTA
    ============================================ */
 
 .lista-personajes {
@@ -418,8 +433,9 @@ body {
   gap: 11px;
 }
 
+
 /* ============================================
-  15. TARJETA DEL PERSONAJE
+   15. TARJETA DEL PERSONAJE
    ============================================ */
 
 .personaje-card {
@@ -445,11 +461,13 @@ body {
 .personaje-card:hover {
   border-color: #c8c8c8;
 
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  box-shadow:
+    0 3px 10px rgba(0, 0, 0, 0.05);
 }
 
+
 /* ============================================
-  16. IMAGEN DEL PERSONAJE
+   16. IMAGEN DEL PERSONAJE
    ============================================ */
 
 .personaje-img {
@@ -468,8 +486,9 @@ body {
   display: block;
 }
 
+
 /* ============================================
-  17. IMAGEN DE RESPALDO
+   17. IMAGEN DE RESPALDO
    ============================================ */
 
 .personaje-placeholder {
@@ -496,8 +515,9 @@ body {
   font-weight: 500;
 }
 
+
 /* ============================================
-  18. INFORMACIÓN DEL PERSONAJE
+   18. INFORMACIÓN DEL PERSONAJE
    ============================================ */
 
 .personaje-info {
@@ -514,8 +534,9 @@ body {
   margin-bottom: 9px;
 }
 
+
 /* ============================================
-  19. BADGES
+   19. BADGES
    ============================================ */
 
 .badges {
@@ -540,6 +561,7 @@ body {
   font-weight: 700;
 }
 
+
 /* RAZA */
 
 .badge-raza {
@@ -547,6 +569,7 @@ body {
 
   color: #1769b2;
 }
+
 
 /* GÉNERO MASCULINO */
 
@@ -556,6 +579,7 @@ body {
   color: var(--verde-texto);
 }
 
+
 /* GÉNERO FEMENINO */
 
 .badge-female {
@@ -564,8 +588,9 @@ body {
   color: var(--rosa-texto);
 }
 
+
 /* ============================================
-  20. BOTONES EDITAR / ELIMINAR
+   20. BOTONES EDITAR / ELIMINAR
    ============================================ */
 
 .acciones {
@@ -594,6 +619,7 @@ body {
   transition: 0.2s;
 }
 
+
 /* EDITAR */
 
 .btn-editar {
@@ -607,6 +633,7 @@ body {
 
   border-color: #1470c5;
 }
+
 
 /* ELIMINAR */
 
@@ -622,8 +649,9 @@ body {
   border-color: #e33b3b;
 }
 
+
 /* ============================================
-  21. ESTADO DE CARGA
+   21. ESTADO DE CARGA
    ============================================ */
 
 .estado {
@@ -662,8 +690,9 @@ body {
   }
 }
 
+
 /* ============================================
-  22. MENSAJE SIN PERSONAJES
+   22. MENSAJE SIN PERSONAJES
    ============================================ */
 
 .vacio {
@@ -689,8 +718,9 @@ body {
   margin-top: 5px;
 }
 
+
 /* ============================================
-  23. PAGINACIÓN
+   23. PAGINACIÓN
    ============================================ */
 
 .paginacion {
@@ -753,8 +783,9 @@ body {
   border-color: var(--naranja);
 }
 
+
 /* ============================================
-  24. FOOTER
+   24. FOOTER
    ============================================ */
 
 footer {
@@ -769,11 +800,13 @@ footer {
   margin-top: 22px;
 }
 
+
 /* ============================================
-  25. RESPONSIVE - TABLET
+   25. RESPONSIVE - TABLET
    ============================================ */
 
 @media (max-width: 900px) {
+
   .contenedor {
     width: min(94%, 700px);
   }
@@ -795,11 +828,13 @@ footer {
   }
 }
 
+
 /* ============================================
-  26. RESPONSIVE - CELULAR
+   26. RESPONSIVE - CELULAR
    ============================================ */
 
 @media (max-width: 620px) {
+
   .contenedor {
     width: 94%;
 

@@ -1,0 +1,72 @@
+# Dragon Ball Roster — CRUD (Semana 08)
+
+CRUD de personajes de Dragon Ball hecho con HTML, CSS y JavaScript puro,
+usando [APIBox](https://apibox.vercel.app/) como backend.
+
+## Funcionalidades
+
+- Listar personajes guardados en APIBox.
+- Crear nuevos personajes desde el formulario.
+- Editar personajes existentes.
+- Eliminar personajes (con confirmación).
+- Vista previa de la imagen mientras escribes la URL.
+- Búsqueda por nombre o raza.
+- Paginación (6 personajes por página).
+- Estados de carga y de error.
+
+## Cómo configurarlo (IMPORTANTE, hazlo antes de todo)
+
+1. Entra a **https://apibox.vercel.app/** y crea un recurso llamado `characters`.
+2. Copia el endpoint que te entregue APIBox (se ve parecido a
+   `https://apibox.vercel.app/XXXXXXXXXXXXXXXX/api/characters`).
+3. Abre `app.js` y reemplaza la constante `API_URL` con TU endpoint:
+   ```js
+   const API_URL = "https://apibox.vercel.app/TU-ID-AQUI/api/characters";
+   ```
+4. Guarda el archivo. Ya puedes abrir `index.html` en el navegador
+   (recomendado usar la extensión "Live Server" de VS Code, para evitar
+   problemas de rutas).
+
+## Estructura del JSON que se envía a APIBox
+
+```json
+{
+  "name": "Goku",
+  "image": "https://...jpg",
+  "race": "Saiyan",
+  "gender": "Male"
+}
+```
+
+## Publicar en GitHub
+
+```bash
+git init
+git add .
+git commit -m "Proyecto final: CRUD Dragon Ball"
+git branch -M main
+git remote add origin https://github.com/TU-USUARIO/TU-REPO.git
+git push -u origin main
+```
+
+## Publicar en Netlify Drop
+
+1. Ve a **https://app.netlify.com/drop**
+2. Arrastra la carpeta completa del proyecto (con `index.html`, `styles.css`,
+   `app.js`, y `netlify.toml`) a la zona de "drop".
+3. Netlify te dará un link público, algo como `https://nombre-al-azar.netlify.app`.
+4. Prueba el link: crea, edita y elimina un personaje para confirmar que
+   todo funciona en producción, no solo en local.
+5. Copia ese link y el de tu repo de GitHub, y entrégalos en el canal de
+   Discord `#semana-08` como pide la consigna.
+
+## Nota sobre CORS
+
+Si al hacer `fetch` a APIBox desde el navegador te aparece un error de CORS
+en la consola, usa el archivo `netlify.toml` (ya incluido, solo hay que
+descomentar las líneas y poner tu ID) para redirigir las llamadas a través
+de tu propio dominio de Netlify, y cambia en `app.js`:
+
+```js
+const API_URL = "/api/characters";
+```
