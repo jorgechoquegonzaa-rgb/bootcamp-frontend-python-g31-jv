@@ -93,20 +93,99 @@
 import ComponenteSaludo from "./components/ComponenteSaludo"
 import ComponenteDespedida from "./components/ComponenteDespedida.jsx"
 
-// TODO: Crear el componente ComponenteDespedida en su propio archivo e importarlo en el componente App
+// // TODO: Crear el componente ComponenteDespedida en su propio archivo e importarlo en el componente App
+
+// const App = () => {
+//   return (
+//     <section>
+//       <h3>Componenentes externos</h3>
+
+//       <ComponenteSaludo />
+
+//       <ComponenteDespedida />
+//     </section>
+//   )
+// }
+
+//export default App
+
+// 07 - Usando expresiones con JSX -> "{}"
+
+// import nombreExportado, {frutas, curso} from "./modulo.js"
+
+// const App = () => {
+//   //Logica del componente
+//   const suma = 8 + 9
+//   const nombre = 'jorge'
+
+//   // Comentario en React.js van dentro del cuerpo de la funcion
+//   /*Otro comentario multilinea dentro del cuerpo de la funcion */
+//   return (
+//     <section>
+//       <h1>Usando expresiones con jsx </h1>
+
+//       <p>{suma}</p>
+//       <p>{1 + 2 * 9 ** 2}</p>
+//       <p>{nombre}</p>
+
+//       <p>Hola {nombre}</p>
+//       <p>{'Hola ${nombre}'}</p>
+
+//       {/* comentario en React.js dentro del JSX*/}
+
+//       <p>{frutas}</p>
+//       <p>{nombreExportado}</p>
+//       <p>{JSON.stringify(curso)}</p>
+//       <p>{curso.nombre}</p>
+//       <p>{curso.nota}</p>
+      
+
+//     </section>
+//   )
+// }
+
+// export default App
+
+// 09 - Propiedades de un componente (Ahora el componete sera reutilizable)
+
+// const BienvenidaPersonalizada = (props) => {
+//   return <h3>Hola {props.nombre}, tu nombre es {props.edad ??'0'} años.</h3>
+// }
+
+// const App = () => {
+//   return (
+//     <section>
+//       <h4>Propiedades de un componente</h4>
+
+//       <BienvenidaPersonalizada nombre = "Jorge" edad="40"/>
+//       <BienvenidaPersonalizada nombre = "Sofia" edad="33"/>
+//       <BienvenidaPersonalizada nombre = "Sofia" />
+//     </section>
+
+//   )
+
+// }
+
+// export default App
+
+  //10 -- Propiedades de un componete (Con destructuring)
+
+const BienvenidaPersonalizada = ({nombre, edad, color ='rojo'}) => {
+  return <h3>Hola {nombre}, tu nombre es {edad ??'0'} años, y tu color favorito es el{color}</h3>
+}
 
 const App = () => {
   return (
     <section>
-      <h3>Componenentes externos</h3>
+      <h4>Propiedades de un componente (Con destructuring)</h4>
 
-      <ComponenteSaludo />
-
-      <ComponenteDespedida />
+      <BienvenidaPersonalizada nombre = "Jorge" edad="40" color='Amarillo'/>
+      <BienvenidaPersonalizada nombre = "Sofia" edad="33"/>
+      <BienvenidaPersonalizada nombre = "Sofia" />
     </section>
+
   )
+
 }
 
 export default App
-
-// 07 - Usando expresiones con JSX -> "{}"
